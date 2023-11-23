@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func CreateUser(ctx context.Context, arg *domain.CreateUserParams) (string, error) {
+func CreateUser(ctx context.Context, arg *domain.CreateUserParams) (*domain.UserDetail, error) {
 	conn, err := grpc.Dial(
 		config.Config.Service.UserServiceAddr,
 
@@ -17,7 +17,7 @@ func CreateUser(ctx context.Context, arg *domain.CreateUserParams) (string, erro
 		grpc.WithBlock(),
 	)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	defer conn.Close()
@@ -26,10 +26,10 @@ func CreateUser(ctx context.Context, arg *domain.CreateUserParams) (string, erro
 
 	res, err := client.CreateUser(ctx, arg)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return res.GetId(), nil
+	return res, nil
 }
 
 func GetOneUser(ctx context.Context, userId string) (*domain.UserDetail, error) {
