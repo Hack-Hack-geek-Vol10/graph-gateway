@@ -16,7 +16,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-type tokenKey struct{}
+type TokenKey struct{}
 
 const (
 	tokenPrefix  = "Bearer"
@@ -73,7 +73,7 @@ func FirebaseAuth(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), tokenKey{}, claims)
+		ctx := context.WithValue(r.Context(), TokenKey{}, claims)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
