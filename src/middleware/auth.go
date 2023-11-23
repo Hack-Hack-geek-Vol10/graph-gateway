@@ -12,7 +12,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/utils/google"
+	"github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/google"
 	"github.com/golang-jwt/jwt"
 )
 
