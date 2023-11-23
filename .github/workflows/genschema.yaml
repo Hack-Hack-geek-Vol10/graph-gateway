@@ -25,28 +25,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      # setup npm version 18
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18'
-      
-      # install required packages
-      - name: Install graphql codegen
+    
+      - name: copy schema to home
         run: |
-          npm i -g @graphql-codegen/cli \
-            @graphql-codegen/typescript \
-            @graphql-codegen/typescript-operations \
-            @graphql-codegen/typescript-react-apollo \
-            @graphql-codegen/typescript-resolvers
-
-      - name: Generate types from schema
-        run: |
-          cd cmd/schema
-          mkdir -p codegen
-          npm run codegen
-          cp -r codegen/* $HOME/schema
+          mkdir -p $HOME/schema
+          cp -r cmd/schema/* $HOME/schema
     
       - name: Checkout another repo
         uses: actions/checkout@v3
@@ -61,16 +44,15 @@ jobs:
           git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
           git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
 
-          git switch -c ft/codegen${{github.sha}}
+          git switch -c ft/copy-schema${{github.sha}}
 
-          mkdir -p codegen
-          cp -r $HOME/schema/* codegen
+          cp -r $HOME/schema/* .
           
       - name: Commit and push changes
         run: |
           git add .
-          git commit -m "feat: generate types from schema"
-          git push origin ft/codegen${{github.sha}}
+          git commit -m "feat: copy schema to frontend"
+          git push origin ft/copy-schema${{github.sha}}
 
       - name: create Pull Request to frontend
         run: |
@@ -79,7 +61,7 @@ jobs:
             --body ":robot: generated openAPI schema[bot]" \
             --repo Hack-Hack-geek-Vol10/frontend \
             --base develop \
-            --head ft/codegen${{github.sha}} \
+            --head ft/copy-schema${{github.sha}} \
             --reviewer "${{ github.event.head_commit.committer.username || github.triggering_actor }}"
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
