@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	CreateUser(ctx context.Context, in *CreateUserParams, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	CreateUser(ctx context.Context, in *CreateUserParams, opts ...grpc.CallOption) (*UserDetail, error)
 	GetUser(ctx context.Context, in *GetUserParams, opts ...grpc.CallOption) (*UserDetail, error)
 }
 
@@ -34,8 +34,8 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserParams, opts ...grpc.CallOption) (*CreateUserResponse, error) {
-	out := new(CreateUserResponse)
+func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserParams, opts ...grpc.CallOption) (*UserDetail, error) {
+	out := new(UserDetail)
 	err := c.cc.Invoke(ctx, "/user.UserService/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (c *userServiceClient) GetUser(ctx context.Context, in *GetUserParams, opts
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	CreateUser(context.Context, *CreateUserParams) (*CreateUserResponse, error)
+	CreateUser(context.Context, *CreateUserParams) (*UserDetail, error)
 	GetUser(context.Context, *GetUserParams) (*UserDetail, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
@@ -65,7 +65,7 @@ type UserServiceServer interface {
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserParams) (*CreateUserResponse, error) {
+func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserParams) (*UserDetail, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
 func (UnimplementedUserServiceServer) GetUser(context.Context, *GetUserParams) (*UserDetail, error) {

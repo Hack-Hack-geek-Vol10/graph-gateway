@@ -24,13 +24,15 @@ func (r *mutationResolver) CreateUser(ctx context.Context, user model.NewUser) (
 		Name:  user.Name,
 	}
 
-	uid, err := services.CreateUser(ctx, req)
+	res, err := services.CreateUser(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
 	return &model.User{
-		UserID: uid,
+		UserID: res.Id,
+		Name:   res.Name,
+		Email:  res.Email,
 	}, nil
 }
 

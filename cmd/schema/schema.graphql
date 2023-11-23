@@ -1,0 +1,20 @@
+# これ変更するとCI回るから無暗に変更しすぎるとフロントがキレるかもよ
+# あと、このファイルはコメントアウトしてもCI回るから注意
+# とりあえず、このファイルは変更は計画的にやること
+type User {
+  user_id: String!
+  email: String!
+  name: String!
+}
+
+type Query {
+  user(user_id: String!): User
+}
+
+input NewUser {
+  name: String!
+}
+
+type Mutation {
+  createUser(user: NewUser!): User!
+}
