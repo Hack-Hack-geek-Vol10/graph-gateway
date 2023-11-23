@@ -8,8 +8,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/graph/model"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/internal"
+	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
+	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/internal"
 )
 
 // CreateUser is the resolver for the createUser field.
