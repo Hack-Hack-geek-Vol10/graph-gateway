@@ -6,20 +6,46 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
+	domain "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/internal"
+	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"
+	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/services"
 )
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, user model.NewUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
+
+	req := &domain.CreateUserParams{
+		Id:    payload.UserId,
+		Email: payload.Email,
+		Name:  user.Name,
+	}
+
+	uid, err := services.CreateUser(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.User{
+		UserID: uid,
+	}, nil
 }
 
-// Users is the resolver for the users field.
-func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
+// User is the resolver for the user field.
+func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, error) {
+	res, err := services.GetOneUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.User{
+		UserID: res.GetId(),
+		Name:   res.GetName(),
+		Email:  res.GetEmail(),
+	}, nil
 }
 
 // Mutation returns internal.MutationResolver implementation.
