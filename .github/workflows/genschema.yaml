@@ -25,12 +25,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - name: move schema to $HOME
-        run : |
-          mkdir -p $HOME/schema
-          cp -r ./cmd/schema/** $HOME/schema
-    
+
       # setup npm version 18
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -46,6 +41,13 @@ jobs:
             @graphql-codegen/typescript-react-apollo \
             @graphql-codegen/typescript-resolvers
 
+      - name: Generate types from schema
+        run: |
+          cd cmd/schema
+          mkdir -p codegen
+          graphql-codegen --config ./codegen.yml
+          cp -r codegen/* $HOME/schema
+    
       - name: Checkout another repo
         uses: actions/checkout@v3
         with:
@@ -54,21 +56,16 @@ jobs:
           ref: develop
               
       # switch repository to frontend
-      - name: copy schema to frontend
+      - name: copy item to frontend
         run: |
           git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
           git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
 
           git switch -c ft/codegen${{github.sha}}
 
-          mv  $HOME/schema/schema.graphql ./schema.graphql 
-
-      - name: Generate types from schema
-        run: |
           mkdir -p codegen
-          graphql-codegen --config ./codegen.yml
-          rm *.graphql
-
+          cp -r $HOME/schema/* codegen
+          
       - name: Commit and push changes
         run: |
           git add .

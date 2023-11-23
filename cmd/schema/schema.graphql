@@ -8,7 +8,6 @@ type Query {
   user(user_id: String!): User
 }
 
-
 input NewUser {
   name: String!
 }
