@@ -8,10 +8,10 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/google"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/graph"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/internal"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/middleware"
+	"github.com/Hack-Hack-geek-Vol10/graph-gateway/utils/google"
 )
 
 const defaultPort = "8080"
