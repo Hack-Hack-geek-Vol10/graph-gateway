@@ -1,6 +1,6 @@
 overwrite: true
-schema: "schema.graphql"
-documents: "codegen"
+schema: "."
+documents: "schema.graphql"
 generates:
   src/generated/graphql.ts:
     plugins:
