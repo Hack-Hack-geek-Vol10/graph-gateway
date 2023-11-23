@@ -45,7 +45,7 @@ jobs:
         run: |
           cd cmd/schema
           mkdir -p codegen
-          graphql-codegen --config ./codegen.yml
+          npm run codegen
           cp -r codegen/* $HOME/schema
     
       - name: Checkout another repo
