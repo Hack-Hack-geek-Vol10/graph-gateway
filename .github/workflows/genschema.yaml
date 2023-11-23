@@ -38,7 +38,7 @@ jobs:
           node-version: '18'
       
       # install required packages
-      - name: Install swagger-typescript-api
+      - name: Install graphql codegen
         run: |
           npm i -g @graphql-codegen/cli \
             @graphql-codegen/typescript \
@@ -65,6 +65,7 @@ jobs:
 
       - name: Generate types from schema
         run: |
+          mkdir -p codegen
           graphql-codegen --config ./codegen.yml
           rm *.graphql
 
