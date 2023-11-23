@@ -61,7 +61,7 @@ jobs:
 
           git switch -c ft/codegen${{github.sha}}
 
-          cp -r $HOME/schema/* .
+          mv  $HOME/schema/schema.graphql ./schema.graphql 
 
       - name: Generate types from schema
         run: |
