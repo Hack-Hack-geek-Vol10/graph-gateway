@@ -30,22 +30,22 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, userID string) (*mode
 
 // CreateProject is the resolver for the createProject field.
 func (r *mutationResolver) CreateProject(ctx context.Context, title string) (*model.Project, error) {
-	return nil, nil
+	return r.project.CreateProject(ctx, title)
 }
 
 // UpdateProject is the resolver for the updateProject field.
 func (r *mutationResolver) UpdateProject(ctx context.Context, projectID string, title *string, lastImage *graphql.Upload) (*model.Project, error) {
-	return nil, nil
+	return r.project.UpdateProject(ctx, projectID, *title, lastImage)
 }
 
 // DeleteProject is the resolver for the deleteProject field.
-func (r *mutationResolver) DeleteProject(ctx context.Context, projectID string) (*model.Project, error) {
-	return nil, nil
+func (r *mutationResolver) DeleteProject(ctx context.Context, projectID string) (*string, error) {
+	return r.project.DeleteProject(ctx, projectID)
 }
 
 // CreateInviteLink is the resolver for the createInviteLink field.
 func (r *mutationResolver) CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error) {
-	return nil, nil
+	return nil, fmt.Errorf("not implemented: CreateInviteLink - createInviteLink")
 }
 
 // CreateProjectMember is the resolver for the createProjectMember field.
@@ -70,12 +70,12 @@ func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, e
 
 // Project is the resolver for the project field.
 func (r *queryResolver) Project(ctx context.Context, projectID string) (*model.Project, error) {
-	return nil, nil
+	return r.project.GetProject(ctx, projectID)
 }
 
 // Projects is the resolver for the projects field.
 func (r *queryResolver) Projects(ctx context.Context, userID string) ([]*model.Project, error) {
-	return nil, nil
+	return r.project.GetProjects(ctx, userID)
 }
 
 // ProjectMembers is the resolver for the projectMembers field.

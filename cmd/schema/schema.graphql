@@ -42,7 +42,7 @@ type Mutation {
   deleteUser(userId: ID!): User
   createProject(title: String!): Project
   updateProject(projectId: ID!, title: String, lastImage: Upload): Project
-  deleteProject(projectId: ID!): Project
+  deleteProject(projectId: ID!): String
   createInviteLink(projectId: ID!,authority:Auth!): String
   createProjectMember(projectId: ID!, userId: ID!, authority: Auth!): ProjectMember
   updateProjectMember(projectId: ID!, userId: ID!, authority: Auth): ProjectMember

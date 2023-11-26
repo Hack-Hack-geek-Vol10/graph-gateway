@@ -93,7 +93,7 @@ type MutationResolver interface {
 	DeleteUser(ctx context.Context, userID string) (*model.User, error)
 	CreateProject(ctx context.Context, title string) (*model.Project, error)
 	UpdateProject(ctx context.Context, projectID string, title *string, lastImage *graphql.Upload) (*model.Project, error)
-	DeleteProject(ctx context.Context, projectID string) (*model.Project, error)
+	DeleteProject(ctx context.Context, projectID string) (*string, error)
 	CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error)
 	CreateProjectMember(ctx context.Context, projectID string, userID string, authority model.Auth) (*model.ProjectMember, error)
 	UpdateProjectMember(ctx context.Context, projectID string, userID string, authority *model.Auth) (*model.ProjectMember, error)
@@ -518,7 +518,7 @@ type Mutation {
   deleteUser(userId: ID!): User
   createProject(title: String!): Project
   updateProject(projectId: ID!, title: String, lastImage: Upload): Project
-  deleteProject(projectId: ID!): Project
+  deleteProject(projectId: ID!): String
   createInviteLink(projectId: ID!,authority:Auth!): String
   createProjectMember(projectId: ID!, userId: ID!, authority: Auth!): ProjectMember
   updateProjectMember(projectId: ID!, userId: ID!, authority: Auth): ProjectMember
@@ -1206,9 +1206,9 @@ func (ec *executionContext) _Mutation_deleteProject(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Project)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOProject2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteProject(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1218,19 +1218,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteProject(ctx context.Cont
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "projectId":
-				return ec.fieldContext_Project_projectId(ctx, field)
-			case "title":
-				return ec.fieldContext_Project_title(ctx, field)
-			case "lastImage":
-				return ec.fieldContext_Project_lastImage(ctx, field)
-			case "isPersonal":
-				return ec.fieldContext_Project_isPersonal(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Project_updatedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Project", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	defer func() {
