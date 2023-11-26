@@ -27,7 +27,7 @@ type GRPCClient interface {
 	UpdateProjectMember(ctx context.Context, arg *domain.MemberRequest) (*domain.Member, error)
 	DeleteProjectMember(ctx context.Context, arg *domain.DeleteMemberRequest) (*domain.DeleteMemberResponse, error)
 
-	UploadImage(ctx context.Context, arg graphql.Upload) (*domain.UploadImageResponse, error)
+	UploadImage(ctx context.Context, name string, arg *graphql.Upload) (*domain.UploadImageResponse, error)
 	DeleteImage(ctx context.Context, key string) (*domain.DeleteImageResponse, error)
 }
 
@@ -62,10 +62,12 @@ func (u *gRPCClient) GetProjects(ctx context.Context, userId string) ([]*domain.
 }
 
 func (u *gRPCClient) UpdateProjectImage(ctx context.Context, projectID string, image *graphql.Upload) (*domain.ProjectDetails, error) {
-	// TODO : upload image to storage
-	imagepath := ""
+	response, err := u.UploadImage(ctx, projectID, image)
+	if err != nil {
+		return nil, err
+	}
 
-	return domain.NewProjectServiceClient(u.conn).UpdateImage(ctx, &domain.UpdateImageRequest{ProjectId: projectID, LastImage: imagepath})
+	return domain.NewProjectServiceClient(u.conn).UpdateImage(ctx, &domain.UpdateImageRequest{ProjectId: projectID, LastImage: response.Path})
 }
 
 func (u *gRPCClient) UpdateProjectTitle(ctx context.Context, arg *domain.UpdateTitleRequest) (*domain.ProjectDetails, error) {
@@ -97,13 +99,13 @@ func (u *gRPCClient) DeleteProjectMember(ctx context.Context, arg *domain.Delete
 	return domain.NewMemberServiceClient(u.conn).DeleteMember(ctx, arg)
 }
 
-func (u *gRPCClient) UploadImage(ctx context.Context, arg graphql.Upload) (*domain.UploadImageResponse, error) {
+func (u *gRPCClient) UploadImage(ctx context.Context, name string, arg *graphql.Upload) (*domain.UploadImageResponse, error) {
 	data, err := io.ReadAll(arg.File)
 	if err != nil {
 		return nil, err
 	}
 	return domain.NewImageServiceClient(u.conn).UploadImage(ctx, &domain.UploadImageRequest{
-		Key:         arg.Filename,
+		Key:         name,
 		ContentType: arg.ContentType,
 		Data:        data,
 	})
