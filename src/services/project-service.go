@@ -46,6 +46,16 @@ func (p *projectService) CreateProject(ctx context.Context, title string) (*mode
 		return nil, err
 	}
 
+	_, err = p.client.CreateProjectMember(ctx, &grpc.MemberRequest{
+		ProjectId: result.ProjectId,
+		UserId:    payload.UserId,
+		Authority: grpc.Auth.Enum(grpc.Auth_owner).String(),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &model.Project{
 		ProjectID: result.ProjectId,
 		Title:     result.Title,
