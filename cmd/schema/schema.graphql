@@ -1,20 +1,50 @@
 # これ変更するとCI回るから無暗に変更しすぎるとフロントがキレるかもよ
 # あと、このファイルはコメントアウトしてもCI回るから注意
 # とりあえず、このファイルは変更は計画的にやること
+scalar Upload
+
+enum Auth {
+  READ_ONLY
+  READ_WRITE
+  OWNER
+}
+
 type User {
-  user_id: String!
+  userId: ID!
   email: String!
   name: String!
 }
 
-type Query {
-  user(user_id: String!): User
+type Project {
+  projectId: ID!
+  title: String!
+  lastImage: String!
+  isPersonal: Boolean!
+  updatedAt: String!
 }
 
-input NewUser {
-  name: String!
+type ProjectMember {
+  projectId: ID!
+  userId: ID!
+  authority: Auth!
+}
+
+type Query {
+  user(userId: ID!): User
+  project(projectId: ID!): Project
+  projects(userId: ID!): [Project]
+  projectMembers(projectId: ID!): [ProjectMember]
 }
 
 type Mutation {
-  createUser(user: NewUser!): User!
+  createUser(name: String!): User
+  updateUser(userId: ID!, name: String): User
+  deleteUser(userId: ID!): User
+  createProject(title: String!): Project
+  updateProject(projectId: ID!, title: String, lastImage: Upload): Project
+  deleteProject(projectId: ID!): String
+  createInviteLink(projectId: ID!,authority:Auth!): String
+  createProjectMember(token: String!): ProjectMember
+  updateProjectMember(projectId: ID!, userId: ID!, authority: Auth): ProjectMember
+  deleteProjectMember(projectId: ID!, userId: ID!): String
 }
