@@ -2,6 +2,7 @@ package gateways
 
 import (
 	"context"
+	"io"
 
 	"github.com/99designs/gqlgen/graphql"
 	domain "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/v1"
@@ -25,6 +26,9 @@ type GRPCClient interface {
 	GetProjectMembers(ctx context.Context, projectId string) ([]*domain.Member, error)
 	UpdateProjectMember(ctx context.Context, arg *domain.MemberRequest) (*domain.Member, error)
 	DeleteProjectMember(ctx context.Context, arg *domain.DeleteMemberRequest) (*domain.DeleteMemberResponse, error)
+
+	UploadImage(ctx context.Context, arg graphql.Upload) (*domain.UploadImageResponse, error)
+	DeleteImage(ctx context.Context, key string) (*domain.DeleteImageResponse, error)
 }
 
 func NewgRPCClient(conn *grpc.ClientConn) GRPCClient {
@@ -91,4 +95,20 @@ func (u *gRPCClient) UpdateProjectMember(ctx context.Context, arg *domain.Member
 
 func (u *gRPCClient) DeleteProjectMember(ctx context.Context, arg *domain.DeleteMemberRequest) (*domain.DeleteMemberResponse, error) {
 	return domain.NewMemberServiceClient(u.conn).DeleteMember(ctx, arg)
+}
+
+func (u *gRPCClient) UploadImage(ctx context.Context, arg graphql.Upload) (*domain.UploadImageResponse, error) {
+	data, err := io.ReadAll(arg.File)
+	if err != nil {
+		return nil, err
+	}
+	return domain.NewImageServiceClient(u.conn).UploadImage(ctx, &domain.UploadImageRequest{
+		Key:         arg.Filename,
+		ContentType: arg.ContentType,
+		Data:        data,
+	})
+}
+
+func (u *gRPCClient) DeleteImage(ctx context.Context, key string) (*domain.DeleteImageResponse, error) {
+	return domain.NewImageServiceClient(u.conn).DeleteImage(ctx, &domain.DeleteImageRequest{Key: key})
 }
