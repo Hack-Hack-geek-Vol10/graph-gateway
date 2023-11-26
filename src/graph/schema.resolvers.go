@@ -6,48 +6,81 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
-	domain "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc"
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/internal"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/services"
 )
 
 // CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, user model.NewUser) (*model.User, error) {
-	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
+func (r *mutationResolver) CreateUser(ctx context.Context, name string) (*model.User, error) {
+	return r.user.CreateUser(ctx, name)
+}
 
-	req := &domain.CreateUserParams{
-		Id:    payload.UserId,
-		Email: payload.Email,
-		Name:  user.Name,
-	}
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, name *string) (*model.User, error) {
+	return nil, fmt.Errorf("not implemented: UpdateUser - updateUser")
+}
 
-	res, err := services.CreateUser(ctx, req)
-	if err != nil {
-		return nil, err
-	}
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, userID string) (*model.User, error) {
+	return nil, fmt.Errorf("not implemented: DeleteUser - deleteUser")
+}
 
-	return &model.User{
-		UserID: res.Id,
-		Name:   res.Name,
-		Email:  res.Email,
-	}, nil
+// CreateProject is the resolver for the createProject field.
+func (r *mutationResolver) CreateProject(ctx context.Context, title string) (*model.Project, error) {
+	return nil, nil
+}
+
+// UpdateProject is the resolver for the updateProject field.
+func (r *mutationResolver) UpdateProject(ctx context.Context, projectID string, title *string, lastImage *graphql.Upload) (*model.Project, error) {
+	return nil, nil
+}
+
+// DeleteProject is the resolver for the deleteProject field.
+func (r *mutationResolver) DeleteProject(ctx context.Context, projectID string) (*model.Project, error) {
+	return nil, nil
+}
+
+// CreateInviteLink is the resolver for the createInviteLink field.
+func (r *mutationResolver) CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error) {
+	return nil, nil
+}
+
+// CreateProjectMember is the resolver for the createProjectMember field.
+func (r *mutationResolver) CreateProjectMember(ctx context.Context, projectID string, userID string, authority model.Auth) (*model.ProjectMember, error) {
+	return nil, nil
+}
+
+// UpdateProjectMember is the resolver for the updateProjectMember field.
+func (r *mutationResolver) UpdateProjectMember(ctx context.Context, projectID string, userID string, authority *model.Auth) (*model.ProjectMember, error) {
+	return nil, nil
+}
+
+// DeleteProjectMember is the resolver for the deleteProjectMember field.
+func (r *mutationResolver) DeleteProjectMember(ctx context.Context, projectID string, userID string) (*model.ProjectMember, error) {
+	return nil, nil
 }
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, error) {
-	res, err := services.GetOneUser(ctx, userID)
-	if err != nil {
-		return nil, err
-	}
+	return r.user.GetUser(ctx, userID)
+}
 
-	return &model.User{
-		UserID: res.GetId(),
-		Name:   res.GetName(),
-		Email:  res.GetEmail(),
-	}, nil
+// Project is the resolver for the project field.
+func (r *queryResolver) Project(ctx context.Context, projectID string) (*model.Project, error) {
+	return nil, nil
+}
+
+// Projects is the resolver for the projects field.
+func (r *queryResolver) Projects(ctx context.Context, userID string) ([]*model.Project, error) {
+	return nil, nil
+}
+
+// ProjectMembers is the resolver for the projectMembers field.
+func (r *queryResolver) ProjectMembers(ctx context.Context, projectID string) ([]*model.ProjectMember, error) {
+	return nil, nil
 }
 
 // Mutation returns internal.MutationResolver implementation.
