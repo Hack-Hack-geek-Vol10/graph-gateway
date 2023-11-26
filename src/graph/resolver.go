@@ -7,6 +7,7 @@ import "github.com/Hack-Hack-geek-Vol10/graph-gateway/src/services"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	user services.UserService
+	user    services.UserService
 	project services.ProjectService
+	member  services.MemberService
 }

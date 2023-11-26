@@ -49,7 +49,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CreateInviteLink    func(childComplexity int, projectID string, authority model.Auth) int
 		CreateProject       func(childComplexity int, title string) int
-		CreateProjectMember func(childComplexity int, projectID string, userID string, authority model.Auth) int
+		CreateProjectMember func(childComplexity int, token string) int
 		CreateUser          func(childComplexity int, name string) int
 		DeleteProject       func(childComplexity int, projectID string) int
 		DeleteProjectMember func(childComplexity int, projectID string, userID string) int
@@ -95,9 +95,9 @@ type MutationResolver interface {
 	UpdateProject(ctx context.Context, projectID string, title *string, lastImage *graphql.Upload) (*model.Project, error)
 	DeleteProject(ctx context.Context, projectID string) (*string, error)
 	CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error)
-	CreateProjectMember(ctx context.Context, projectID string, userID string, authority model.Auth) (*model.ProjectMember, error)
+	CreateProjectMember(ctx context.Context, token string) (*model.ProjectMember, error)
 	UpdateProjectMember(ctx context.Context, projectID string, userID string, authority *model.Auth) (*model.ProjectMember, error)
-	DeleteProjectMember(ctx context.Context, projectID string, userID string) (*model.ProjectMember, error)
+	DeleteProjectMember(ctx context.Context, projectID string, userID string) (*string, error)
 }
 type QueryResolver interface {
 	User(ctx context.Context, userID string) (*model.User, error)
@@ -159,7 +159,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateProjectMember(childComplexity, args["projectId"].(string), args["userId"].(string), args["authority"].(model.Auth)), true
+		return e.complexity.Mutation.CreateProjectMember(childComplexity, args["token"].(string)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -520,9 +520,9 @@ type Mutation {
   updateProject(projectId: ID!, title: String, lastImage: Upload): Project
   deleteProject(projectId: ID!): String
   createInviteLink(projectId: ID!,authority:Auth!): String
-  createProjectMember(projectId: ID!, userId: ID!, authority: Auth!): ProjectMember
+  createProjectMember(token: String!): ProjectMember
   updateProjectMember(projectId: ID!, userId: ID!, authority: Auth): ProjectMember
-  deleteProjectMember(projectId: ID!, userId: ID!): ProjectMember
+  deleteProjectMember(projectId: ID!, userId: ID!): String
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -559,32 +559,14 @@ func (ec *executionContext) field_Mutation_createProjectMember_args(ctx context.
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["projectId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("projectId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["projectId"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg1, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg1
-	var arg2 model.Auth
-	if tmp, ok := rawArgs["authority"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("authority"))
-		arg2, err = ec.unmarshalNAuth2githubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["authority"] = arg2
+	args["token"] = arg0
 	return args, nil
 }
 
@@ -1301,7 +1283,7 @@ func (ec *executionContext) _Mutation_createProjectMember(ctx context.Context, f
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateProjectMember(rctx, fc.Args["projectId"].(string), fc.Args["userId"].(string), fc.Args["authority"].(model.Auth))
+		return ec.resolvers.Mutation().CreateProjectMember(rctx, fc.Args["token"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1430,9 +1412,9 @@ func (ec *executionContext) _Mutation_deleteProjectMember(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.ProjectMember)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOProjectMember2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteProjectMember(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1442,15 +1424,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteProjectMember(ctx contex
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "projectId":
-				return ec.fieldContext_ProjectMember_projectId(ctx, field)
-			case "userId":
-				return ec.fieldContext_ProjectMember_userId(ctx, field)
-			case "authority":
-				return ec.fieldContext_ProjectMember_authority(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ProjectMember", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	defer func() {

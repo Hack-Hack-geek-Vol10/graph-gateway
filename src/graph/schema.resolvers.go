@@ -49,18 +49,18 @@ func (r *mutationResolver) CreateInviteLink(ctx context.Context, projectID strin
 }
 
 // CreateProjectMember is the resolver for the createProjectMember field.
-func (r *mutationResolver) CreateProjectMember(ctx context.Context, projectID string, userID string, authority model.Auth) (*model.ProjectMember, error) {
-	return nil, nil
+func (r *mutationResolver) CreateProjectMember(ctx context.Context, token string) (*model.ProjectMember, error) {
+	return r.member.CreateMember(ctx, token)
 }
 
 // UpdateProjectMember is the resolver for the updateProjectMember field.
 func (r *mutationResolver) UpdateProjectMember(ctx context.Context, projectID string, userID string, authority *model.Auth) (*model.ProjectMember, error) {
-	return nil, nil
+	return r.member.UpdateMember(ctx, projectID, userID, authority)
 }
 
 // DeleteProjectMember is the resolver for the deleteProjectMember field.
-func (r *mutationResolver) DeleteProjectMember(ctx context.Context, projectID string, userID string) (*model.ProjectMember, error) {
-	return nil, nil
+func (r *mutationResolver) DeleteProjectMember(ctx context.Context, projectID string, userID string) (*string, error) {
+	return r.member.DeleteMember(ctx, projectID, userID)
 }
 
 // User is the resolver for the user field.
@@ -80,7 +80,7 @@ func (r *queryResolver) Projects(ctx context.Context, userID string) ([]*model.P
 
 // ProjectMembers is the resolver for the projectMembers field.
 func (r *queryResolver) ProjectMembers(ctx context.Context, projectID string) ([]*model.ProjectMember, error) {
-	return nil, nil
+	return r.member.GetMembers(ctx, projectID)
 }
 
 // Mutation returns internal.MutationResolver implementation.
