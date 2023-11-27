@@ -3,17 +3,23 @@ package services
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
-	grpc "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/v1"
+	member "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service"
+	project "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/project-service"
+	token "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/gateways"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"
 )
 
 type projectService struct {
-	client gateways.GRPCClient
+	projectClient gateways.ProjectClient
+	memberClient  gateways.MemberClient
+	imageClient   gateways.ImageClient
+	tokenClient   gateways.TokenClient
 }
 
 type ProjectService interface {
@@ -22,11 +28,15 @@ type ProjectService interface {
 	GetProjects(ctx context.Context, userID string) ([]*model.Project, error)
 	UpdateProject(ctx context.Context, projectID, title string, image *graphql.Upload) (*model.Project, error)
 	DeleteProject(ctx context.Context, projectId string) (*string, error)
+	CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error)
 }
 
-func NewProjectService(client gateways.GRPCClient) ProjectService {
+func NewProjectService(projectClient gateways.ProjectClient, memberClient gateways.MemberClient, tokenClient gateways.TokenClient, imageClient gateways.ImageClient) ProjectService {
 	return &projectService{
-		client: client,
+		projectClient: projectClient,
+		memberClient:  memberClient,
+		tokenClient:   tokenClient,
+		imageClient:   imageClient,
 	}
 }
 
@@ -37,7 +47,7 @@ func (p *projectService) CreateProject(ctx context.Context, title string) (*mode
 
 	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
 
-	result, err := p.client.CreateProject(ctx, &grpc.CreateProjectRequest{
+	result, err := p.projectClient.CreateProject(ctx, &project.CreateProjectRequest{
 		Title:  title,
 		UserId: payload.UserId,
 	})
@@ -46,10 +56,10 @@ func (p *projectService) CreateProject(ctx context.Context, title string) (*mode
 		return nil, err
 	}
 
-	_, err = p.client.CreateProjectMember(ctx, &grpc.MemberRequest{
+	_, err = p.memberClient.CreateProjectMember(ctx, &member.MemberRequest{
 		ProjectId: result.ProjectId,
 		UserId:    payload.UserId,
-		Authority: grpc.Auth.Enum(grpc.Auth_owner).String(),
+		Authority: member.Auth.Enum(member.Auth_owner).String(),
 	})
 
 	if err != nil {
@@ -65,7 +75,7 @@ func (p *projectService) CreateProject(ctx context.Context, title string) (*mode
 }
 
 func (p *projectService) GetProject(ctx context.Context, projectID string) (*model.Project, error) {
-	result, err := p.client.GetOneProject(ctx, projectID)
+	result, err := p.projectClient.GetOneProject(ctx, projectID)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +89,7 @@ func (p *projectService) GetProject(ctx context.Context, projectID string) (*mod
 }
 
 func (p *projectService) GetProjects(ctx context.Context, userId string) ([]*model.Project, error) {
-	result, err := p.client.GetProjects(ctx, userId)
+	result, err := p.projectClient.GetProjects(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -99,20 +109,20 @@ func (p *projectService) GetProjects(ctx context.Context, userId string) ([]*mod
 
 func (p *projectService) UpdateProject(ctx context.Context, projectID, title string, image *graphql.Upload) (*model.Project, error) {
 	var (
-		result *grpc.ProjectDetails
+		result *project.ProjectDetails
 		err    error
 	)
 
 	switch {
 	case len(title) != 0 && image == nil:
-		result, err = p.client.UpdateProjectTitle(ctx, &grpc.UpdateTitleRequest{
+		result, err = p.projectClient.UpdateProjectTitle(ctx, &project.UpdateTitleRequest{
 			ProjectId: projectID,
 			Title:     title,
 		})
 	case len(title) == 0 && image != nil:
-		result, err = p.client.UpdateProjectImage(ctx, projectID, image)
+		result, err = p.imageUpload(ctx, projectID, image)
 	case len(title) != 0 && image != nil:
-		_, err = p.client.UpdateProjectTitle(ctx, &grpc.UpdateTitleRequest{
+		_, err = p.projectClient.UpdateProjectTitle(ctx, &project.UpdateTitleRequest{
 			ProjectId: projectID,
 			Title:     title,
 		})
@@ -120,7 +130,7 @@ func (p *projectService) UpdateProject(ctx context.Context, projectID, title str
 			return nil, err
 		}
 
-		result, err = p.client.UpdateProjectImage(ctx, projectID, image)
+		result, err = p.imageUpload(ctx, projectID, image)
 	default:
 		return nil, fmt.Errorf("title or image must be specified")
 	}
@@ -137,11 +147,31 @@ func (p *projectService) UpdateProject(ctx context.Context, projectID, title str
 	}, nil
 }
 
+func (p *projectService) imageUpload(ctx context.Context, projectID string, image *graphql.Upload) (*project.ProjectDetails, error) {
+	response, err := p.imageClient.UploadImage(ctx, projectID, image)
+	if err != nil {
+		return nil, err
+	}
+
+	return p.projectClient.UpdateProjectImage(ctx, projectID, response.Path)
+}
+
 func (p *projectService) DeleteProject(ctx context.Context, projectId string) (*string, error) {
-	project, err := p.client.DeleteProject(ctx, projectId)
+	project, err := p.projectClient.DeleteProject(ctx, projectId)
 	if err != nil {
 		return nil, err
 	}
 
 	return &project, nil
+}
+
+func (p *projectService) CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error) {
+	result, err := p.tokenClient.CreateToken(ctx, &token.CreateTokenRequest{
+		ProjectId: projectID,
+		Authority: token.Auth(token.Auth_value[strings.ToLower(authority.String())]),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &result.Token, nil
 }

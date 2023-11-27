@@ -3,16 +3,16 @@ package services
 import (
 	"context"
 
-	grpc "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/v1"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/token"
+	member "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service"
+	v1 "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/gateways"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"
 )
 
 type memberService struct {
-	client gateways.GRPCClient
-	maker  token.Maker
+	memberClient gateways.MemberClient
+	tokenClient  gateways.TokenClient
 }
 
 type MemberService interface {
@@ -22,24 +22,27 @@ type MemberService interface {
 	DeleteMember(ctx context.Context, projectID, userID string) (*string, error)
 }
 
-func NewMemberService(client gateways.GRPCClient) MemberService {
+func NewMemberService(memberClient gateways.MemberClient, tokenClient gateways.TokenClient) MemberService {
 	return &memberService{
-		client: client,
+		memberClient: memberClient,
+		tokenClient:  tokenClient,
 	}
 }
 
 func (m *memberService) CreateMember(ctx context.Context, token string) (*model.ProjectMember, error) {
 	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
 
-	claims, err := m.maker.VerifyToken(token)
+	response, err := m.tokenClient.VerifyToken(ctx, &v1.ValidateTokenRequest{
+		Token: token,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := m.client.CreateProjectMember(ctx, &grpc.MemberRequest{
+	result, err := m.memberClient.CreateProjectMember(ctx, &member.MemberRequest{
 		UserId:    payload.UserId,
-		ProjectId: claims.ProjectID,
-		Authority: claims.Authority.String(),
+		ProjectId: response.ProjectId,
+		Authority: response.Authority.String(),
 	})
 	if err != nil {
 		return nil, err
@@ -53,7 +56,7 @@ func (m *memberService) CreateMember(ctx context.Context, token string) (*model.
 }
 
 func (m *memberService) GetMembers(ctx context.Context, projectID string) ([]*model.ProjectMember, error) {
-	result, err := m.client.GetProjectMembers(ctx, projectID)
+	result, err := m.memberClient.GetProjectMembers(ctx, projectID)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +74,7 @@ func (m *memberService) GetMembers(ctx context.Context, projectID string) ([]*mo
 }
 
 func (m *memberService) UpdateMember(ctx context.Context, projectID, userID string, authority *model.Auth) (*model.ProjectMember, error) {
-	result, err := m.client.UpdateProjectMember(ctx, &grpc.MemberRequest{
+	result, err := m.memberClient.UpdateProjectMember(ctx, &member.MemberRequest{
 		ProjectId: projectID,
 		UserId:    userID,
 		Authority: authority.String(),
@@ -88,7 +91,7 @@ func (m *memberService) UpdateMember(ctx context.Context, projectID, userID stri
 }
 
 func (m *memberService) DeleteMember(ctx context.Context, projectID, userID string) (*string, error) {
-	result, err := m.client.DeleteProjectMember(ctx, &grpc.DeleteMemberRequest{
+	result, err := m.memberClient.DeleteProjectMember(ctx, &member.DeleteMemberRequest{
 		ProjectId: projectID,
 		UserId:    userID,
 	})

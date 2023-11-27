@@ -12,5 +12,9 @@ type Server struct {
 }
 
 type Service struct {
-	UserServiceAddr string `env:"USER_SERVICE_ADDR" envDefault:"localhost:8081"`
+	UserServiceAddr    string `env:"USER_SERVICE_ADDR" envDefault:"localhost:8081"`
+	ProjectServiceAddr string `env:"PROJECT_SERVICE_ADDR" envDefault:"localhost:8082"`
+	MemberServiceAddr  string `env:"MEMBER_SERVICE_ADDR" envDefault:"localhost:8083"`
+	ImageServiceAddr   string `env:"IMAGE_SERVICE_ADDR" envDefault:"localhost:8084"`
+	TokenServiceAddr   string `env:"TOKEN_SERVICE_ADDR" envDefault:"localhost:8085"`
 }
