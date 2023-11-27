@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 
-	member "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service"
-	v1 "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service"
+	member "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service/v1"
+	v1 "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service/v1"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/gateways"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"
@@ -32,7 +32,7 @@ func NewMemberService(memberClient gateways.MemberClient, tokenClient gateways.T
 func (m *memberService) CreateMember(ctx context.Context, token string) (*model.ProjectMember, error) {
 	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
 
-	response, err := m.tokenClient.VerifyToken(ctx, &v1.ValidateTokenRequest{
+	response, err := m.tokenClient.VerifyToken(ctx, &v1.VerifyTokenRequest{
 		Token: token,
 	})
 	if err != nil {
