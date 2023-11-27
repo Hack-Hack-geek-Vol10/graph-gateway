@@ -3,54 +3,56 @@ package services
 import (
 	"context"
 
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/cmd/config"
-	domain "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	user "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/user-service/v1"
+	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/gateways"
+	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
+	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"
 )
 
-func CreateUser(ctx context.Context, arg *domain.CreateUserParams) (*domain.UserDetail, error) {
-	conn, err := grpc.Dial(
-		config.Config.Service.UserServiceAddr,
-
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	defer conn.Close()
-
-	client := domain.NewUserServiceClient(conn)
-
-	res, err := client.CreateUser(ctx, arg)
-	if err != nil {
-		return nil, err
-	}
-
-	return res, nil
+type userService struct {
+	userClient gateways.UserClient
 }
 
-func GetOneUser(ctx context.Context, userId string) (*domain.UserDetail, error) {
-	conn, err := grpc.Dial(
-		config.Config.Service.UserServiceAddr,
+type UserService interface {
+	CreateUser(ctx context.Context, name string) (*model.User, error)
+	GetUser(ctx context.Context, userId string) (*model.User, error)
+}
 
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
-	)
+func NewUserService(userClient gateways.UserClient) UserService {
+	return &userService{
+		userClient: userClient,
+	}
+}
+
+func (u *userService) CreateUser(ctx context.Context, name string) (*model.User, error) {
+	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
+
+	result, err := u.userClient.CreateUser(ctx, &user.CreateUserParams{
+		UserId: payload.UserId,
+		Email:  payload.Email,
+		Name:   name,
+	})
+
 	if err != nil {
 		return nil, err
 	}
 
-	defer conn.Close()
+	return &model.User{
+		UserID: result.UserId,
+		Email:  result.Email,
+		Name:   result.Name,
+	}, nil
+}
 
-	client := domain.NewUserServiceClient(conn)
-
-	res, err := client.GetUser(ctx, &domain.GetUserParams{Id: userId})
+func (u *userService) GetUser(ctx context.Context, userId string) (*model.User, error) {
+	result, err := u.userClient.GetOneUser(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	return &model.User{
+		UserID: result.UserId,
+		Email:  result.Email,
+		Name:   result.Name,
+	}, nil
 }

@@ -11,7 +11,6 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/cmd/config"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/internal"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"
 )
@@ -19,8 +18,13 @@ import (
 func Server() {
 	mux := http.NewServeMux()
 
+	resolber, err := NewResolver()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	mux.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	mux.Handle("/query", middleware.FirebaseAuth(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: &graph.Resolver{}}))))
+	mux.Handle("/query", middleware.FirebaseAuth(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolber}))))
 
 	srv := &http.Server{
 		Addr:    config.Config.Server.Port,
