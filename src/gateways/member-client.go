@@ -3,7 +3,7 @@ package gateways
 import (
 	"context"
 
-	memberService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service"
+	memberService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service/v1"
 )
 
 type memberClient struct {
@@ -24,11 +24,11 @@ func NewMemberClient(client memberService.MemberServiceClient) MemberClient {
 }
 
 func (m *memberClient) CreateProjectMember(ctx context.Context, arg *memberService.MemberRequest) (*memberService.Member, error) {
-	return m.client.AddMember(ctx, arg)
+	return m.client.CreateMember(ctx, arg)
 }
 
 func (m *memberClient) GetProjectMembers(ctx context.Context, projectId string) ([]*memberService.Member, error) {
-	result, err := m.client.ReadMembers(ctx, &memberService.ReadMembersRequest{ProjectId: projectId})
+	result, err := m.client.GetMembers(ctx, &memberService.GetMembersRequest{ProjectId: projectId})
 	if err != nil {
 		return nil, err
 	}

@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 
-	user "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/user-service"
+	user "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/user-service/v1"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/gateways"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"

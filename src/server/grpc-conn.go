@@ -7,11 +7,11 @@ import (
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/services"
 
-	imageService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/image-service"
-	memberService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service"
-	projectService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/project-service"
-	tokenService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service"
-	userService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/user-service"
+	imageService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/image-service/v1"
+	memberService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service/v1"
+	projectService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/project-service/v1"
+	tokenService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service/v1"
+	userService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/user-service/v1"
 )
 
 func NewResolver() (*graph.Resolver, error) {

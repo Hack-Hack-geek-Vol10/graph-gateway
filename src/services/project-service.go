@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
-	member "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service"
-	project "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/project-service"
-	token "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service"
+	member "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service/v1"
+	project "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/project-service/v1"
+	token "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service/v1"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/gateways"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
 	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"

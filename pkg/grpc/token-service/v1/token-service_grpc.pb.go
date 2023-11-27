@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TokenServiceClient interface {
 	CreateToken(ctx context.Context, in *CreateTokenRequest, opts ...grpc.CallOption) (*CreateTokenResponse, error)
-	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error)
+	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error)
 }
 
 type tokenServiceClient struct {
@@ -43,9 +43,9 @@ func (c *tokenServiceClient) CreateToken(ctx context.Context, in *CreateTokenReq
 	return out, nil
 }
 
-func (c *tokenServiceClient) ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error) {
-	out := new(ValidateTokenResponse)
-	err := c.cc.Invoke(ctx, "/token_service.TokenService/ValidateToken", in, out, opts...)
+func (c *tokenServiceClient) VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error) {
+	out := new(VerifyTokenResponse)
+	err := c.cc.Invoke(ctx, "/token_service.TokenService/VerifyToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *tokenServiceClient) ValidateToken(ctx context.Context, in *ValidateToke
 // for forward compatibility
 type TokenServiceServer interface {
 	CreateToken(context.Context, *CreateTokenRequest) (*CreateTokenResponse, error)
-	ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error)
+	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
 	mustEmbedUnimplementedTokenServiceServer()
 }
 
@@ -68,8 +68,8 @@ type UnimplementedTokenServiceServer struct {
 func (UnimplementedTokenServiceServer) CreateToken(context.Context, *CreateTokenRequest) (*CreateTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateToken not implemented")
 }
-func (UnimplementedTokenServiceServer) ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ValidateToken not implemented")
+func (UnimplementedTokenServiceServer) VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyToken not implemented")
 }
 func (UnimplementedTokenServiceServer) mustEmbedUnimplementedTokenServiceServer() {}
 
@@ -102,20 +102,20 @@ func _TokenService_CreateToken_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TokenService_ValidateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ValidateTokenRequest)
+func _TokenService_VerifyToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TokenServiceServer).ValidateToken(ctx, in)
+		return srv.(TokenServiceServer).VerifyToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/token_service.TokenService/ValidateToken",
+		FullMethod: "/token_service.TokenService/VerifyToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TokenServiceServer).ValidateToken(ctx, req.(*ValidateTokenRequest))
+		return srv.(TokenServiceServer).VerifyToken(ctx, req.(*VerifyTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -132,8 +132,8 @@ var TokenService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TokenService_CreateToken_Handler,
 		},
 		{
-			MethodName: "ValidateToken",
-			Handler:    _TokenService_ValidateToken_Handler,
+			MethodName: "VerifyToken",
+			Handler:    _TokenService_VerifyToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -3,7 +3,7 @@ package gateways
 import (
 	"context"
 
-	userService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/user-service"
+	userService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/user-service/v1"
 )
 
 type userClient struct {
