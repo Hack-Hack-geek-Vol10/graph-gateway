@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 // TODO:SDKからJWKsを取得する
@@ -22,8 +23,26 @@ func GetGoogleJWKs() {
 		log.Fatalf("Failed to read the response body: %v", err)
 	}
 
+	parseToInterface(body)
+}
+
+func ParseGoogleJWKs(path string) {
+	data, err := os.Open(path)
+	if err != nil {
+		log.Fatalf("Failed to open file: %v", err)
+	}
+
+	body, err := io.ReadAll(data)
+	if err != nil {
+		log.Fatalf("Failed to read the response body: %v", err)
+	}
+
+	parseToInterface(body)
+}
+
+func parseToInterface(data []byte) {
 	var result map[string]interface{}
-	err = json.Unmarshal([]byte(body), &result)
+	err := json.Unmarshal([]byte(data), &result)
 
 	if err != nil {
 		log.Fatalf("Failed to json unmarshal: %v", err)
