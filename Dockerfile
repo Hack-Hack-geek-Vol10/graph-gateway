@@ -5,7 +5,7 @@ COPY . .
 
 RUN go build -o graphql-server ./cmd/app/main.go
 
-FROM alpine:3.14.2 AS runner
+FROM ubuntu:latest AS runner
 
 WORKDIR /app
 
