@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/99designs/gqlgen/graphql"
-	imageService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/image-service/v1"
+	imageService "github.com/schema-creator/graph-gateway/pkg/grpc/image-service/v1"
 )
 
 type imageClient struct {

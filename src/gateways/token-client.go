@@ -3,7 +3,7 @@ package gateways
 import (
 	"context"
 
-	tokenService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service/v1"
+	tokenService "github.com/schema-creator/graph-gateway/pkg/grpc/token-service/v1"
 )
 
 type tokenClient struct {

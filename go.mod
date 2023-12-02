@@ -1,4 +1,4 @@
-module github.com/Hack-Hack-geek-Vol10/graph-gateway
+module github.com/schema-creator/graph-gateway
 
 go 1.21.4
 

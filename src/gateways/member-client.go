@@ -3,7 +3,7 @@ package gateways
 import (
 	"context"
 
-	memberService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service/v1"
+	memberService "github.com/schema-creator/graph-gateway/pkg/grpc/member-service/v1"
 )
 
 type memberClient struct {

@@ -10,9 +10,9 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/cmd/config"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/internal"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"
+	"github.com/schema-creator/graph-gateway/cmd/config"
+	"github.com/schema-creator/graph-gateway/src/internal"
+	"github.com/schema-creator/graph-gateway/src/middleware"
 )
 
 func Server() {

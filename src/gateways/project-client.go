@@ -3,7 +3,7 @@ package gateways
 import (
 	"context"
 
-	projectService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/project-service/v1"
+	projectService "github.com/schema-creator/graph-gateway/pkg/grpc/project-service/v1"
 )
 
 type projectClient struct {

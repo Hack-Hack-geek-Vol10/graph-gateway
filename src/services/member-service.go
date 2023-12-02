@@ -3,11 +3,11 @@ package services
 import (
 	"context"
 
-	member "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service/v1"
-	v1 "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service/v1"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/gateways"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/middleware"
+	member "github.com/schema-creator/graph-gateway/pkg/grpc/member-service/v1"
+	v1 "github.com/schema-creator/graph-gateway/pkg/grpc/token-service/v1"
+	"github.com/schema-creator/graph-gateway/src/gateways"
+	"github.com/schema-creator/graph-gateway/src/graph/model"
+	"github.com/schema-creator/graph-gateway/src/middleware"
 )
 
 type memberService struct {
