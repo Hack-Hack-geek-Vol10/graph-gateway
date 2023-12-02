@@ -9,7 +9,7 @@ FROM alpine:3.14.2 AS runner
 
 WORKDIR /app
 
-COPY --from=builder ./graphql-server /app
+COPY --from=builder ./app/graphql-server /app
 
 ENV SERVER_ADDR=8080
 ENV USER_SERVICE_ADDR="localhost:8081"
