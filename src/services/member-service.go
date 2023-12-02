@@ -32,7 +32,7 @@ func NewMemberService(memberClient gateways.MemberClient, tokenClient gateways.T
 func (m *memberService) CreateMember(ctx context.Context, token string) (*model.ProjectMember, error) {
 	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
 
-	response, err := m.tokenClient.VerifyToken(ctx, &v1.VerifyTokenRequest{
+	response, err := m.tokenClient.GetToken(ctx, &v1.GetTokenRequest{
 		Token: token,
 	})
 	if err != nil {
@@ -42,7 +42,7 @@ func (m *memberService) CreateMember(ctx context.Context, token string) (*model.
 	result, err := m.memberClient.CreateProjectMember(ctx, &member.MemberRequest{
 		UserId:    payload.UserId,
 		ProjectId: response.ProjectId,
-		Authority: response.Authority.String(),
+		Authority: response.Authority,
 	})
 	if err != nil {
 		return nil, err
