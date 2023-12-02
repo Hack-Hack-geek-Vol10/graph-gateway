@@ -1,6 +1,8 @@
 package server
 
 import (
+	"log"
+
 	"github.com/schema-creator/graph-gateway/cmd/config"
 	grpcclient "github.com/schema-creator/graph-gateway/pkg/grpc-client"
 	"github.com/schema-creator/graph-gateway/src/gateways"
@@ -15,6 +17,7 @@ import (
 )
 
 func NewResolver() (*graph.Resolver, error) {
+	log.Println("ok")
 	userConn, err := grpcclient.Connect(config.Config.Service.UserServiceAddr)
 	if err != nil {
 		return nil, err
@@ -23,20 +26,25 @@ func NewResolver() (*graph.Resolver, error) {
 	// if err != nil {
 	// 	return nil, err
 	// }
+	log.Println("ok")
 
 	projectConn, err := grpcclient.Connect(config.Config.Service.ProjectServiceAddr)
 	if err != nil {
 		return nil, err
 	}
+	log.Println("ok")
 
 	imageConn, err := grpcclient.Connect(config.Config.Service.ImageServiceAddr)
 	if err != nil {
 		return nil, err
 	}
+	log.Println("ok")
+
 	memberConn, err := grpcclient.Connect(config.Config.Service.MemberServiceAddr)
 	if err != nil {
 		return nil, err
 	}
+	log.Println("ok")
 
 	return &graph.Resolver{
 		UserService: services.NewUserService(gateways.NewUserClien(userService.NewUserServiceClient(userConn))),
