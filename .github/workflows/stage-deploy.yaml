@@ -55,7 +55,7 @@ jobs:
       - name: Change manifest
         run: |
           cd backend/stage
-          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY }}/${{ github.repository }}:${{ github.sha }}"' 'deployment.yaml'
+          yq -i '.spec.template.spec.containers[0].image = "${{ secrets.HARBOR_REGISTRY }}/${{ github.repository }}:${{ github.sha }}"' 'bff.yaml'
       
       - name: push repository
         run: |
