@@ -8,7 +8,7 @@ RUN go build -o graphql-server ./cmd/app/main.go
 FROM ubuntu:latest AS runner
 
 WORKDIR /app
-
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder ./app/graphql-server /app
 COPY --from=builder ./app/*.json /app
 
