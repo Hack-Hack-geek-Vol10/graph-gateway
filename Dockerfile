@@ -5,11 +5,12 @@ COPY . .
 
 RUN go build -o graphql-server ./cmd/app/main.go
 
-FROM alpine:3.14.2 AS runner
+FROM ubuntu:latest AS runner
 
 WORKDIR /app
 
 COPY --from=builder ./app/graphql-server /app
+COPY --from=builder ./app/*.json /app
 
 ENV SERVER_ADDR=8080
 ENV USER_SERVICE_ADDR="localhost:8081"
