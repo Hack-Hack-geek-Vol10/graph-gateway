@@ -1,17 +1,17 @@
 package server
 
 import (
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/cmd/config"
-	grpcclient "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc-client"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/gateways"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/services"
+	"github.com/schema-creator/graph-gateway/cmd/config"
+	grpcclient "github.com/schema-creator/graph-gateway/pkg/grpc-client"
+	"github.com/schema-creator/graph-gateway/src/gateways"
+	"github.com/schema-creator/graph-gateway/src/graph"
+	"github.com/schema-creator/graph-gateway/src/services"
 
-	imageService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/image-service/v1"
-	memberService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/member-service/v1"
-	projectService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/project-service/v1"
-	tokenService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/token-service/v1"
-	userService "github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/grpc/user-service/v1"
+	imageService "github.com/schema-creator/graph-gateway/pkg/grpc/image-service/v1"
+	memberService "github.com/schema-creator/graph-gateway/pkg/grpc/member-service/v1"
+	projectService "github.com/schema-creator/graph-gateway/pkg/grpc/project-service/v1"
+	tokenService "github.com/schema-creator/graph-gateway/pkg/grpc/token-service/v1"
+	userService "github.com/schema-creator/graph-gateway/pkg/grpc/user-service/v1"
 )
 
 func NewResolver() (*graph.Resolver, error) {

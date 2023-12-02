@@ -27,7 +27,7 @@ func Server() {
 	mux.Handle("/query", middleware.FirebaseAuth(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolber}))))
 
 	srv := &http.Server{
-		Addr:    config.Config.Server.Port,
+		Addr:    ":" + config.Config.Server.Port,
 		Handler: mux,
 	}
 

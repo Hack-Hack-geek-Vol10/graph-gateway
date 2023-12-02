@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/cmd/config"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/google"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/server"
+	"github.com/schema-creator/graph-gateway/cmd/config"
+	"github.com/schema-creator/graph-gateway/pkg/google"
+	"github.com/schema-creator/graph-gateway/src/server"
 )
 
 func init() {
