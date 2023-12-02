@@ -12,7 +12,7 @@ type tokenClient struct {
 
 type TokenClient interface {
 	CreateToken(ctx context.Context, arg *tokenService.CreateTokenRequest) (*tokenService.CreateTokenResponse, error)
-	VerifyToken(ctx context.Context, arg *tokenService.VerifyTokenRequest) (*tokenService.VerifyTokenResponse, error)
+	GetToken(ctx context.Context, arg *tokenService.GetTokenRequest) (*tokenService.GetTokenResponse, error)
 }
 
 func NewTokenClient(client tokenService.TokenServiceClient) TokenClient {
@@ -25,6 +25,6 @@ func (t *tokenClient) CreateToken(ctx context.Context, arg *tokenService.CreateT
 	return t.client.CreateToken(ctx, arg)
 }
 
-func (t *tokenClient) VerifyToken(ctx context.Context, arg *tokenService.VerifyTokenRequest) (*tokenService.VerifyTokenResponse, error) {
-	return t.client.VerifyToken(ctx, arg)
+func (t *tokenClient) GetToken(ctx context.Context, arg *tokenService.GetTokenRequest) (*tokenService.GetTokenResponse, error) {
+	return t.client.GetToken(ctx, arg)
 }

@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -168,7 +167,7 @@ func (p *projectService) DeleteProject(ctx context.Context, projectId string) (*
 func (p *projectService) CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error) {
 	result, err := p.tokenClient.CreateToken(ctx, &token.CreateTokenRequest{
 		ProjectId: projectID,
-		Authority: token.Auth(token.Auth_value[strings.ToLower(authority.String())]),
+		Authority: authority.String(),
 	})
 	if err != nil {
 		return nil, err
