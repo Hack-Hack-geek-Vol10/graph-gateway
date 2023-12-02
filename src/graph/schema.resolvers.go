@@ -9,8 +9,8 @@ import (
 	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/graph/model"
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/src/internal"
+	"github.com/schema-creator/graph-gateway/src/graph/model"
+	"github.com/schema-creator/graph-gateway/src/internal"
 )
 
 // CreateUser is the resolver for the createUser field.

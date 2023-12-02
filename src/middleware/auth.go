@@ -12,8 +12,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Hack-Hack-geek-Vol10/graph-gateway/pkg/google"
 	"github.com/golang-jwt/jwt"
+	"github.com/schema-creator/graph-gateway/pkg/google"
 )
 
 type TokenKey struct{}

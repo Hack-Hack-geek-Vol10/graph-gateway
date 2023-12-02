@@ -1,6 +1,6 @@
 package graph
 
-import "github.com/Hack-Hack-geek-Vol10/graph-gateway/src/services"
+import "github.com/schema-creator/graph-gateway/src/services"
 
 // This file will not be regenerated automatically.
 //
