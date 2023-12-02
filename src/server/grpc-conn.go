@@ -19,11 +19,10 @@ func NewResolver() (*graph.Resolver, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	tokenConn, err := grpcclient.Connect(config.Config.Service.TokenServiceAddr)
-	if err != nil {
-		return nil, err
-	}
+	// tokenConn, err := grpcclient.Connect(config.Config.Service.TokenServiceAddr)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	projectConn, err := grpcclient.Connect(config.Config.Service.ProjectServiceAddr)
 	if err != nil {
@@ -34,7 +33,6 @@ func NewResolver() (*graph.Resolver, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	memberConn, err := grpcclient.Connect(config.Config.Service.MemberServiceAddr)
 	if err != nil {
 		return nil, err
@@ -45,12 +43,12 @@ func NewResolver() (*graph.Resolver, error) {
 		ProjectService: services.NewProjectService(
 			gateways.NewProjectClient(projectService.NewProjectServiceClient(projectConn)),
 			gateways.NewMemberClient(memberService.NewMemberServiceClient(memberConn)),
-			gateways.NewTokenClient(tokenService.NewTokenServiceClient(tokenConn)),
+			gateways.NewTokenClient(tokenService.NewTokenServiceClient(nil)),
 			gateways.NewImageClient(imageService.NewImageServiceClient(imageConn)),
 		),
 		MemberService: services.NewMemberService(
 			gateways.NewMemberClient(memberService.NewMemberServiceClient(memberConn)),
-			gateways.NewTokenClient(tokenService.NewTokenServiceClient(tokenConn)),
+			gateways.NewTokenClient(tokenService.NewTokenServiceClient(nil)),
 		),
 	}, nil
 }

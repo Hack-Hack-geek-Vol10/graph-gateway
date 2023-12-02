@@ -10,7 +10,7 @@ FROM ubuntu:latest AS runner
 WORKDIR /app
 
 COPY --from=builder ./app/graphql-server /app
-COPY ./jwks.json ./app
+COPY --from=builder ./app/*.json /app
 
 ENV SERVER_ADDR=8080
 ENV USER_SERVICE_ADDR="localhost:8081"

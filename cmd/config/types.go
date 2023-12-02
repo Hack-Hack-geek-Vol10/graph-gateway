@@ -8,7 +8,7 @@ type config struct {
 }
 
 type Server struct {
-	Port string `env:"SERVER_ADDR" envDefault:":8080"`
+	Port string `env:"SERVER_ADDR" envDefault:"8080"`
 }
 
 type Service struct {
@@ -16,5 +16,5 @@ type Service struct {
 	ProjectServiceAddr string `env:"PROJECT_SERVICE_ADDR" envDefault:"localhost:8082"`
 	MemberServiceAddr  string `env:"MEMBER_SERVICE_ADDR" envDefault:"localhost:8083"`
 	ImageServiceAddr   string `env:"IMAGE_SERVICE_ADDR" envDefault:"localhost:8084"`
-	TokenServiceAddr   string `env:"TOKEN_SERVICE_ADDR" envDefault:"localhost:8085"`
+	//TokenServiceAddr   string `env:"TOKEN_SERVICE_ADDR" envDefault:"localhost:8085"`
 }
