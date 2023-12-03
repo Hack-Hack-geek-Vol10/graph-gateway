@@ -25,10 +25,10 @@ func Server() {
 	}
 
 	e.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:3000", "*", "http://180.199.156.51", "https://180.199.156.51"},
+		AllowOrigins: []string{"*", "http://localhost:3000"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 		AllowHeaders: []string{middleware.TokenKey, "Content-Type"},
-	}), middleware.FirebaseAuth())
+	}), middleware.FirebaseAuth(), echoMiddleware.Logger(), echoMiddleware.Recover())
 	e.POST("/query", echo.WrapHandler(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolber}))))
 
 	srv := &http.Server{
