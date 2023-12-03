@@ -24,7 +24,7 @@ func Server() {
 	}
 
 	mux.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	mux.Handle("/query", middleware.FirebaseAuth(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolber}))))
+	mux.Handle("/query", middleware.SetCors(middleware.FirebaseAuth(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolber})))))
 
 	srv := &http.Server{
 		Addr:    ":" + config.Config.Server.Port,
