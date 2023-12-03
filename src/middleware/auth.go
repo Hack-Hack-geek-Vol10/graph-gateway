@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/base64"
@@ -8,44 +9,49 @@ import (
 	"encoding/pem"
 	"errors"
 	"log"
+	"net/http"
 	"strings"
 
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/schema-creator/graph-gateway/pkg/google"
 )
 
+type TokenKey struct{}
+
 const (
-	TokenKey     = "token_key"
 	tokenPrefix  = "Bearer"
-	AuthTokenKey = "Authorization"
+	authTokenKey = "Authorization"
 )
 
-func FirebaseAuth() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		token := c.Request.Header.Get(AuthTokenKey)
+func FirebaseAuth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := r.Header.Get(authTokenKey)
 		// 未認証の場合はunauthorizedを返す
 		if token == "" {
 			log.Println("token is empty")
-			c.AbortWithError(401, nil)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		authHeaderParts := strings.Split(token, " ")
 		if len(authHeaderParts) != 2 {
 			log.Println("token is invalid1")
-			c.AbortWithError(401, nil)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		if authHeaderParts[0] != tokenPrefix {
 			log.Println("token is invalid2")
-			c.AbortWithError(401, nil)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		td := &TokenDecoder{tokenString: authHeaderParts[1]}
 		header, err := td.Decode()
 		if err != nil {
 			log.Println("token is invalid3")
-			c.AbortWithError(401, nil)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		kid := header["kid"].(string)
@@ -55,18 +61,21 @@ func FirebaseAuth() gin.HandlerFunc {
 		publicKey, err := cp.Parse()
 		if err != nil {
 			log.Println("token is invalid4")
-			c.AbortWithError(401, nil)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		tv := &TokenVerifier{tokenString: authHeaderParts[1], publicKey: publicKey}
 		claims, err := tv.Verify()
 		if err != nil {
 			log.Println("token is invalid5")
-			c.AbortWithError(401, nil)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
-		log.Println("ok", claims)
-		c.Set(TokenKey, claims)
-	}
+
+		ctx := context.WithValue(r.Context(), TokenKey{}, claims)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
 
 type TokenDecoder struct {

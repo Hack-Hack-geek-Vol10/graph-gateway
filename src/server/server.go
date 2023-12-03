@@ -12,6 +12,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/schema-creator/graph-gateway/cmd/config"
 	"github.com/schema-creator/graph-gateway/src/internal"
+	"github.com/schema-creator/graph-gateway/src/middleware"
 )
 
 func Server() {
@@ -30,7 +31,7 @@ func Server() {
 		log.Fatal(err)
 	}
 
-	mux.Handle("/query", c.Handler(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolver}))))
+	mux.Handle("/query", c.Handler(middleware.FirebaseAuth(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolver})))))
 
 	srv := &http.Server{
 		Addr:    ":" + config.Config.Server.Port,

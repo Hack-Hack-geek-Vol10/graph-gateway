@@ -30,7 +30,7 @@ func NewMemberService(memberClient gateways.MemberClient, tokenClient gateways.T
 }
 
 func (m *memberService) CreateMember(ctx context.Context, token string) (*model.ProjectMember, error) {
-	payload := ctx.Value(middleware.TokenKey).(*middleware.CustomClaims)
+	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
 
 	response, err := m.tokenClient.GetToken(ctx, &v1.GetTokenRequest{
 		Token: token,

@@ -44,7 +44,7 @@ func (p *projectService) CreateProject(ctx context.Context, title string) (*mode
 		title = "untitled"
 	}
 
-	payload := ctx.Value(middleware.TokenKey).(*middleware.CustomClaims)
+	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
 
 	result, err := p.projectClient.CreateProject(ctx, &project.CreateProjectRequest{
 		Title:  title,
