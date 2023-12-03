@@ -25,7 +25,7 @@ func Server() {
 	}
 
 	e.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:3000", "*", ""},
+		AllowOrigins: []string{"http://localhost:3000", "*", "http://180.199.156.51", "https://180.199.156.51"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 		AllowHeaders: []string{middleware.TokenKey, "Content-Type"},
 	}), middleware.FirebaseAuth())
