@@ -64,6 +64,7 @@ func FirebaseAuth() gin.HandlerFunc {
 			log.Println("token is invalid5")
 			c.AbortWithError(401, nil)
 		}
+		log.Println("ok", claims)
 		c.Set(TokenKey, claims)
 	}
 }

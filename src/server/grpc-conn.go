@@ -28,30 +28,36 @@ func NewResolver() (*graph.Resolver, error) {
 		config.Config.Service.ImageServiceAddr,
 		config.Config.Service.MemberServiceAddr,
 	)
+
 	userConn, err := grpcclient.Connect(config.Config.Service.UserServiceAddr)
 	if err != nil {
 		return nil, err
 	}
+	log.Println("userConn ok")
 	tokenConn, err := grpcclient.Connect(config.Config.Service.TokenServiceAddr)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Println("tokenConn ok")
 	projectConn, err := grpcclient.Connect(config.Config.Service.ProjectServiceAddr)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Println("projectConn ok")
 	imageConn, err := grpcclient.Connect(config.Config.Service.ImageServiceAddr)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Println("imageConn ok")
 	memberConn, err := grpcclient.Connect(config.Config.Service.MemberServiceAddr)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Println("memberConn ok")
 	return &graph.Resolver{
 		UserService: services.NewUserService(gateways.NewUserClien(userService.NewUserServiceClient(userConn))),
 		ProjectService: services.NewProjectService(

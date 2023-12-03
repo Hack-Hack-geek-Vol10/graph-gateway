@@ -14,7 +14,6 @@ func init() {
 }
 
 func main() {
-	log.Println(google.GoogleJWks)
 	log.Println("start graph-gateway server")
 	server.Server()
 }
