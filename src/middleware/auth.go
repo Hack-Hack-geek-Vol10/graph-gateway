@@ -10,64 +10,61 @@ import (
 	"log"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/labstack/echo/v4"
 	"github.com/schema-creator/graph-gateway/pkg/google"
 )
 
 const (
 	TokenKey     = "token_key"
 	tokenPrefix  = "Bearer"
-	authTokenKey = "Authorization"
+	AuthTokenKey = "Authorization"
 )
 
-func FirebaseAuth() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			token := c.Request().Header.Get(authTokenKey)
-			// 未認証の場合はunauthorizedを返す
-			if token == "" {
-				log.Println("token is empty")
-				return echo.ErrUnauthorized
-			}
-
-			authHeaderParts := strings.Split(token, " ")
-			if len(authHeaderParts) != 2 {
-				log.Println("token is invalid1")
-				return echo.ErrUnauthorized
-			}
-
-			if authHeaderParts[0] != tokenPrefix {
-				log.Println("token is invalid2")
-				return echo.ErrUnauthorized
-			}
-
-			td := &TokenDecoder{tokenString: authHeaderParts[1]}
-			header, err := td.Decode()
-			if err != nil {
-				log.Println("token is invalid3")
-				return echo.ErrUnauthorized
-			}
-
-			kid := header["kid"].(string)
-			certString := google.GoogleJWks[kid].(string)
-
-			cp := &CertificateParser{certString: certString}
-			publicKey, err := cp.Parse()
-			if err != nil {
-				log.Println("token is invalid4")
-				return echo.ErrUnauthorized
-			}
-
-			tv := &TokenVerifier{tokenString: authHeaderParts[1], publicKey: publicKey}
-			claims, err := tv.Verify()
-			if err != nil {
-				log.Println("token is invalid5")
-				return echo.ErrUnauthorized
-			}
-			c.Set(TokenKey, claims)
-			return next(c)
+func FirebaseAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.Request.Header.Get(AuthTokenKey)
+		// 未認証の場合はunauthorizedを返す
+		if token == "" {
+			log.Println("token is empty")
+			c.AbortWithError(401, nil)
 		}
+
+		authHeaderParts := strings.Split(token, " ")
+		if len(authHeaderParts) != 2 {
+			log.Println("token is invalid1")
+			c.AbortWithError(401, nil)
+		}
+
+		if authHeaderParts[0] != tokenPrefix {
+			log.Println("token is invalid2")
+			c.AbortWithError(401, nil)
+		}
+
+		td := &TokenDecoder{tokenString: authHeaderParts[1]}
+		header, err := td.Decode()
+		if err != nil {
+			log.Println("token is invalid3")
+			c.AbortWithError(401, nil)
+		}
+
+		kid := header["kid"].(string)
+		certString := google.GoogleJWks[kid].(string)
+
+		cp := &CertificateParser{certString: certString}
+		publicKey, err := cp.Parse()
+		if err != nil {
+			log.Println("token is invalid4")
+			c.AbortWithError(401, nil)
+		}
+
+		tv := &TokenVerifier{tokenString: authHeaderParts[1], publicKey: publicKey}
+		claims, err := tv.Verify()
+		if err != nil {
+			log.Println("token is invalid5")
+			c.AbortWithError(401, nil)
+		}
+		c.Set(TokenKey, claims)
 	}
 }
 

@@ -9,31 +9,30 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/labstack/echo/v4"
-	echoMiddleware "github.com/labstack/echo/v4/middleware"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/schema-creator/graph-gateway/cmd/config"
 	"github.com/schema-creator/graph-gateway/src/internal"
 	"github.com/schema-creator/graph-gateway/src/middleware"
 )
 
 func Server() {
-	e := echo.New()
+	g := gin.Default()
 
 	resolber, err := NewResolver()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	e.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
-		AllowOrigins: []string{"*", "http://localhost:3000"},
-		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
-		AllowHeaders: []string{middleware.TokenKey, "Content-Type"},
-	}), middleware.FirebaseAuth(), echoMiddleware.Logger(), echoMiddleware.Recover())
-	e.POST("/query", echo.WrapHandler(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolber}))))
+	c := cors.DefaultConfig()
+	c.AllowAllOrigins = true
+	c.AllowHeaders = append(c.AllowHeaders, middleware.AuthTokenKey)
+	g.Use(cors.New(c), middleware.FirebaseAuth(), gin.Recovery())
+	g.POST("/query", gin.WrapH(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolber}))))
 
 	srv := &http.Server{
 		Addr:    ":" + config.Config.Server.Port,
-		Handler: e,
+		Handler: g,
 	}
 
 	go func() {
