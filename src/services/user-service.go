@@ -25,7 +25,7 @@ func NewUserService(userClient gateways.UserClient) UserService {
 }
 
 func (u *userService) CreateUser(ctx context.Context, name string) (*model.User, error) {
-	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
+	payload := ctx.Value(middleware.TokenKey).(*middleware.CustomClaims)
 
 	result, err := u.userClient.CreateUser(ctx, &user.CreateUserParams{
 		UserId: payload.UserId,
