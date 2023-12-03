@@ -9,30 +9,32 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
+	"github.com/rs/cors"
 	"github.com/schema-creator/graph-gateway/cmd/config"
 	"github.com/schema-creator/graph-gateway/src/internal"
-	"github.com/schema-creator/graph-gateway/src/middleware"
 )
 
 func Server() {
-	g := gin.Default()
+	mux := http.NewServeMux()
 
-	resolber, err := NewResolver()
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*", "http://localhost:3000"},
+		AllowedHeaders:   []string{"*", "Content-Type", "Authorization"},
+		AllowedMethods:   []string{"POST"},
+		AllowCredentials: true,
+		Debug:            true,
+	})
+
+	resolver, err := NewResolver()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	c := cors.DefaultConfig()
-	c.AllowAllOrigins = true
-	c.AllowHeaders = append(c.AllowHeaders, middleware.AuthTokenKey)
-	g.Use(cors.New(c), middleware.FirebaseAuth(), gin.Recovery())
-	g.POST("/query", gin.WrapH(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolber}))))
+	mux.Handle("/query", c.Handler(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolver}))))
 
 	srv := &http.Server{
 		Addr:    ":" + config.Config.Server.Port,
-		Handler: g,
+		Handler: mux,
 	}
 
 	go func() {
