@@ -18,122 +18,122 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ImageServiceClient is the client API for ImageService service.
+// ImageClient is the client API for Image service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ImageServiceClient interface {
+type ImageClient interface {
 	UploadImage(ctx context.Context, in *UploadImageRequest, opts ...grpc.CallOption) (*UploadImageResponse, error)
 	DeleteImage(ctx context.Context, in *DeleteImageRequest, opts ...grpc.CallOption) (*DeleteImageResponse, error)
 }
 
-type imageServiceClient struct {
+type imageClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewImageServiceClient(cc grpc.ClientConnInterface) ImageServiceClient {
-	return &imageServiceClient{cc}
+func NewImageClient(cc grpc.ClientConnInterface) ImageClient {
+	return &imageClient{cc}
 }
 
-func (c *imageServiceClient) UploadImage(ctx context.Context, in *UploadImageRequest, opts ...grpc.CallOption) (*UploadImageResponse, error) {
+func (c *imageClient) UploadImage(ctx context.Context, in *UploadImageRequest, opts ...grpc.CallOption) (*UploadImageResponse, error) {
 	out := new(UploadImageResponse)
-	err := c.cc.Invoke(ctx, "/image_service.v1.ImageService/UploadImage", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/image_service.v1.Image/UploadImage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *imageServiceClient) DeleteImage(ctx context.Context, in *DeleteImageRequest, opts ...grpc.CallOption) (*DeleteImageResponse, error) {
+func (c *imageClient) DeleteImage(ctx context.Context, in *DeleteImageRequest, opts ...grpc.CallOption) (*DeleteImageResponse, error) {
 	out := new(DeleteImageResponse)
-	err := c.cc.Invoke(ctx, "/image_service.v1.ImageService/DeleteImage", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/image_service.v1.Image/DeleteImage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ImageServiceServer is the server API for ImageService service.
-// All implementations must embed UnimplementedImageServiceServer
+// ImageServer is the server API for Image service.
+// All implementations must embed UnimplementedImageServer
 // for forward compatibility
-type ImageServiceServer interface {
+type ImageServer interface {
 	UploadImage(context.Context, *UploadImageRequest) (*UploadImageResponse, error)
 	DeleteImage(context.Context, *DeleteImageRequest) (*DeleteImageResponse, error)
-	mustEmbedUnimplementedImageServiceServer()
+	mustEmbedUnimplementedImageServer()
 }
 
-// UnimplementedImageServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedImageServiceServer struct {
+// UnimplementedImageServer must be embedded to have forward compatible implementations.
+type UnimplementedImageServer struct {
 }
 
-func (UnimplementedImageServiceServer) UploadImage(context.Context, *UploadImageRequest) (*UploadImageResponse, error) {
+func (UnimplementedImageServer) UploadImage(context.Context, *UploadImageRequest) (*UploadImageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadImage not implemented")
 }
-func (UnimplementedImageServiceServer) DeleteImage(context.Context, *DeleteImageRequest) (*DeleteImageResponse, error) {
+func (UnimplementedImageServer) DeleteImage(context.Context, *DeleteImageRequest) (*DeleteImageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteImage not implemented")
 }
-func (UnimplementedImageServiceServer) mustEmbedUnimplementedImageServiceServer() {}
+func (UnimplementedImageServer) mustEmbedUnimplementedImageServer() {}
 
-// UnsafeImageServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ImageServiceServer will
+// UnsafeImageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ImageServer will
 // result in compilation errors.
-type UnsafeImageServiceServer interface {
-	mustEmbedUnimplementedImageServiceServer()
+type UnsafeImageServer interface {
+	mustEmbedUnimplementedImageServer()
 }
 
-func RegisterImageServiceServer(s grpc.ServiceRegistrar, srv ImageServiceServer) {
-	s.RegisterService(&ImageService_ServiceDesc, srv)
+func RegisterImageServer(s grpc.ServiceRegistrar, srv ImageServer) {
+	s.RegisterService(&Image_ServiceDesc, srv)
 }
 
-func _ImageService_UploadImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Image_UploadImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UploadImageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ImageServiceServer).UploadImage(ctx, in)
+		return srv.(ImageServer).UploadImage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/image_service.v1.ImageService/UploadImage",
+		FullMethod: "/image_service.v1.Image/UploadImage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ImageServiceServer).UploadImage(ctx, req.(*UploadImageRequest))
+		return srv.(ImageServer).UploadImage(ctx, req.(*UploadImageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ImageService_DeleteImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Image_DeleteImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteImageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ImageServiceServer).DeleteImage(ctx, in)
+		return srv.(ImageServer).DeleteImage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/image_service.v1.ImageService/DeleteImage",
+		FullMethod: "/image_service.v1.Image/DeleteImage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ImageServiceServer).DeleteImage(ctx, req.(*DeleteImageRequest))
+		return srv.(ImageServer).DeleteImage(ctx, req.(*DeleteImageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ImageService_ServiceDesc is the grpc.ServiceDesc for ImageService service.
+// Image_ServiceDesc is the grpc.ServiceDesc for Image service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ImageService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "image_service.v1.ImageService",
-	HandlerType: (*ImageServiceServer)(nil),
+var Image_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "image_service.v1.Image",
+	HandlerType: (*ImageServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "UploadImage",
-			Handler:    _ImageService_UploadImage_Handler,
+			Handler:    _Image_UploadImage_Handler,
 		},
 		{
 			MethodName: "DeleteImage",
-			Handler:    _ImageService_DeleteImage_Handler,
+			Handler:    _Image_DeleteImage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

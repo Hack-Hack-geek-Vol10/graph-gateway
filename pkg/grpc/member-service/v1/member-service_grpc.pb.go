@@ -18,194 +18,194 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// MemberServiceClient is the client API for MemberService service.
+// MemberClient is the client API for Member service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MemberServiceClient interface {
-	CreateMember(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*Member, error)
+type MemberClient interface {
+	CreateMember(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*MemberResponse, error)
 	GetMembers(ctx context.Context, in *GetMembersRequest, opts ...grpc.CallOption) (*ListMembers, error)
-	UpdateAuthority(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*Member, error)
+	UpdateAuthority(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*MemberResponse, error)
 	DeleteMember(ctx context.Context, in *DeleteMemberRequest, opts ...grpc.CallOption) (*DeleteMemberResponse, error)
 }
 
-type memberServiceClient struct {
+type memberClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMemberServiceClient(cc grpc.ClientConnInterface) MemberServiceClient {
-	return &memberServiceClient{cc}
+func NewMemberClient(cc grpc.ClientConnInterface) MemberClient {
+	return &memberClient{cc}
 }
 
-func (c *memberServiceClient) CreateMember(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*Member, error) {
-	out := new(Member)
-	err := c.cc.Invoke(ctx, "/member.v1.MemberService/CreateMember", in, out, opts...)
+func (c *memberClient) CreateMember(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*MemberResponse, error) {
+	out := new(MemberResponse)
+	err := c.cc.Invoke(ctx, "/member.v1.Member/CreateMember", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *memberServiceClient) GetMembers(ctx context.Context, in *GetMembersRequest, opts ...grpc.CallOption) (*ListMembers, error) {
+func (c *memberClient) GetMembers(ctx context.Context, in *GetMembersRequest, opts ...grpc.CallOption) (*ListMembers, error) {
 	out := new(ListMembers)
-	err := c.cc.Invoke(ctx, "/member.v1.MemberService/GetMembers", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/member.v1.Member/GetMembers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *memberServiceClient) UpdateAuthority(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*Member, error) {
-	out := new(Member)
-	err := c.cc.Invoke(ctx, "/member.v1.MemberService/UpdateAuthority", in, out, opts...)
+func (c *memberClient) UpdateAuthority(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*MemberResponse, error) {
+	out := new(MemberResponse)
+	err := c.cc.Invoke(ctx, "/member.v1.Member/UpdateAuthority", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *memberServiceClient) DeleteMember(ctx context.Context, in *DeleteMemberRequest, opts ...grpc.CallOption) (*DeleteMemberResponse, error) {
+func (c *memberClient) DeleteMember(ctx context.Context, in *DeleteMemberRequest, opts ...grpc.CallOption) (*DeleteMemberResponse, error) {
 	out := new(DeleteMemberResponse)
-	err := c.cc.Invoke(ctx, "/member.v1.MemberService/DeleteMember", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/member.v1.Member/DeleteMember", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MemberServiceServer is the server API for MemberService service.
-// All implementations must embed UnimplementedMemberServiceServer
+// MemberServer is the server API for Member service.
+// All implementations must embed UnimplementedMemberServer
 // for forward compatibility
-type MemberServiceServer interface {
-	CreateMember(context.Context, *MemberRequest) (*Member, error)
+type MemberServer interface {
+	CreateMember(context.Context, *MemberRequest) (*MemberResponse, error)
 	GetMembers(context.Context, *GetMembersRequest) (*ListMembers, error)
-	UpdateAuthority(context.Context, *MemberRequest) (*Member, error)
+	UpdateAuthority(context.Context, *MemberRequest) (*MemberResponse, error)
 	DeleteMember(context.Context, *DeleteMemberRequest) (*DeleteMemberResponse, error)
-	mustEmbedUnimplementedMemberServiceServer()
+	mustEmbedUnimplementedMemberServer()
 }
 
-// UnimplementedMemberServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedMemberServiceServer struct {
+// UnimplementedMemberServer must be embedded to have forward compatible implementations.
+type UnimplementedMemberServer struct {
 }
 
-func (UnimplementedMemberServiceServer) CreateMember(context.Context, *MemberRequest) (*Member, error) {
+func (UnimplementedMemberServer) CreateMember(context.Context, *MemberRequest) (*MemberResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMember not implemented")
 }
-func (UnimplementedMemberServiceServer) GetMembers(context.Context, *GetMembersRequest) (*ListMembers, error) {
+func (UnimplementedMemberServer) GetMembers(context.Context, *GetMembersRequest) (*ListMembers, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMembers not implemented")
 }
-func (UnimplementedMemberServiceServer) UpdateAuthority(context.Context, *MemberRequest) (*Member, error) {
+func (UnimplementedMemberServer) UpdateAuthority(context.Context, *MemberRequest) (*MemberResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateAuthority not implemented")
 }
-func (UnimplementedMemberServiceServer) DeleteMember(context.Context, *DeleteMemberRequest) (*DeleteMemberResponse, error) {
+func (UnimplementedMemberServer) DeleteMember(context.Context, *DeleteMemberRequest) (*DeleteMemberResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteMember not implemented")
 }
-func (UnimplementedMemberServiceServer) mustEmbedUnimplementedMemberServiceServer() {}
+func (UnimplementedMemberServer) mustEmbedUnimplementedMemberServer() {}
 
-// UnsafeMemberServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MemberServiceServer will
+// UnsafeMemberServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MemberServer will
 // result in compilation errors.
-type UnsafeMemberServiceServer interface {
-	mustEmbedUnimplementedMemberServiceServer()
+type UnsafeMemberServer interface {
+	mustEmbedUnimplementedMemberServer()
 }
 
-func RegisterMemberServiceServer(s grpc.ServiceRegistrar, srv MemberServiceServer) {
-	s.RegisterService(&MemberService_ServiceDesc, srv)
+func RegisterMemberServer(s grpc.ServiceRegistrar, srv MemberServer) {
+	s.RegisterService(&Member_ServiceDesc, srv)
 }
 
-func _MemberService_CreateMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Member_CreateMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MemberRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MemberServiceServer).CreateMember(ctx, in)
+		return srv.(MemberServer).CreateMember(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/member.v1.MemberService/CreateMember",
+		FullMethod: "/member.v1.Member/CreateMember",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MemberServiceServer).CreateMember(ctx, req.(*MemberRequest))
+		return srv.(MemberServer).CreateMember(ctx, req.(*MemberRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MemberService_GetMembers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Member_GetMembers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetMembersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MemberServiceServer).GetMembers(ctx, in)
+		return srv.(MemberServer).GetMembers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/member.v1.MemberService/GetMembers",
+		FullMethod: "/member.v1.Member/GetMembers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MemberServiceServer).GetMembers(ctx, req.(*GetMembersRequest))
+		return srv.(MemberServer).GetMembers(ctx, req.(*GetMembersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MemberService_UpdateAuthority_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Member_UpdateAuthority_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MemberRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MemberServiceServer).UpdateAuthority(ctx, in)
+		return srv.(MemberServer).UpdateAuthority(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/member.v1.MemberService/UpdateAuthority",
+		FullMethod: "/member.v1.Member/UpdateAuthority",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MemberServiceServer).UpdateAuthority(ctx, req.(*MemberRequest))
+		return srv.(MemberServer).UpdateAuthority(ctx, req.(*MemberRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MemberService_DeleteMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Member_DeleteMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteMemberRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MemberServiceServer).DeleteMember(ctx, in)
+		return srv.(MemberServer).DeleteMember(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/member.v1.MemberService/DeleteMember",
+		FullMethod: "/member.v1.Member/DeleteMember",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MemberServiceServer).DeleteMember(ctx, req.(*DeleteMemberRequest))
+		return srv.(MemberServer).DeleteMember(ctx, req.(*DeleteMemberRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// MemberService_ServiceDesc is the grpc.ServiceDesc for MemberService service.
+// Member_ServiceDesc is the grpc.ServiceDesc for Member service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var MemberService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "member.v1.MemberService",
-	HandlerType: (*MemberServiceServer)(nil),
+var Member_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "member.v1.Member",
+	HandlerType: (*MemberServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreateMember",
-			Handler:    _MemberService_CreateMember_Handler,
+			Handler:    _Member_CreateMember_Handler,
 		},
 		{
 			MethodName: "GetMembers",
-			Handler:    _MemberService_GetMembers_Handler,
+			Handler:    _Member_GetMembers_Handler,
 		},
 		{
 			MethodName: "UpdateAuthority",
-			Handler:    _MemberService_UpdateAuthority_Handler,
+			Handler:    _Member_UpdateAuthority_Handler,
 		},
 		{
 			MethodName: "DeleteMember",
-			Handler:    _MemberService_DeleteMember_Handler,
+			Handler:    _Member_DeleteMember_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
