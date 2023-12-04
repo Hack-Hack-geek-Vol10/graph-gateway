@@ -7,7 +7,7 @@ import (
 )
 
 type tokenClient struct {
-	client tokenService.TokenServiceClient
+	client tokenService.TokenClient
 }
 
 type TokenClient interface {
@@ -15,7 +15,7 @@ type TokenClient interface {
 	GetToken(ctx context.Context, arg *tokenService.GetTokenRequest) (*tokenService.GetTokenResponse, error)
 }
 
-func NewTokenClient(client tokenService.TokenServiceClient) TokenClient {
+func NewTokenClient(client tokenService.TokenClient) TokenClient {
 	return &tokenClient{
 		client: client,
 	}

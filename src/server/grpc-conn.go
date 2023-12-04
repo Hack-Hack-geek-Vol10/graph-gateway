@@ -59,16 +59,16 @@ func NewResolver() (*graph.Resolver, error) {
 
 	log.Println("memberConn ok")
 	return &graph.Resolver{
-		UserService: services.NewUserService(gateways.NewUserClien(userService.NewUserServiceClient(userConn))),
+		UserService: services.NewUserService(gateways.NewUserClien(userService.NewUserClient(userConn))),
 		ProjectService: services.NewProjectService(
-			gateways.NewProjectClient(projectService.NewProjectServiceClient(projectConn)),
-			gateways.NewMemberClient(memberService.NewMemberServiceClient(memberConn)),
-			gateways.NewTokenClient(tokenService.NewTokenServiceClient(tokenConn)),
-			gateways.NewImageClient(imageService.NewImageServiceClient(imageConn)),
+			gateways.NewProjectClient(projectService.NewProjectClient(projectConn)),
+			gateways.NewMemberClient(memberService.NewMemberClient(memberConn)),
+			gateways.NewTokenClient(tokenService.NewTokenClient(tokenConn)),
+			gateways.NewImageClient(imageService.NewImageClient(imageConn)),
 		),
 		MemberService: services.NewMemberService(
-			gateways.NewMemberClient(memberService.NewMemberServiceClient(memberConn)),
-			gateways.NewTokenClient(tokenService.NewTokenServiceClient(tokenConn)),
+			gateways.NewMemberClient(memberService.NewMemberClient(memberConn)),
+			gateways.NewTokenClient(tokenService.NewTokenClient(tokenConn)),
 		),
 	}, nil
 }

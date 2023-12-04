@@ -7,27 +7,27 @@ import (
 )
 
 type memberClient struct {
-	client memberService.MemberServiceClient
+	client memberService.MemberClient
 }
 
 type MemberClient interface {
-	CreateProjectMember(ctx context.Context, arg *memberService.MemberRequest) (*memberService.Member, error)
-	GetProjectMembers(ctx context.Context, projectId string) ([]*memberService.Member, error)
-	UpdateProjectMember(ctx context.Context, arg *memberService.MemberRequest) (*memberService.Member, error)
+	CreateProjectMember(ctx context.Context, arg *memberService.MemberRequest) (*memberService.MemberResponse, error)
+	GetProjectMembers(ctx context.Context, projectId string) ([]*memberService.MemberResponse, error)
+	UpdateProjectMember(ctx context.Context, arg *memberService.MemberRequest) (*memberService.MemberResponse, error)
 	DeleteProjectMember(ctx context.Context, arg *memberService.DeleteMemberRequest) (*memberService.DeleteMemberResponse, error)
 }
 
-func NewMemberClient(client memberService.MemberServiceClient) MemberClient {
+func NewMemberClient(client memberService.MemberClient) MemberClient {
 	return &memberClient{
 		client: client,
 	}
 }
 
-func (m *memberClient) CreateProjectMember(ctx context.Context, arg *memberService.MemberRequest) (*memberService.Member, error) {
+func (m *memberClient) CreateProjectMember(ctx context.Context, arg *memberService.MemberRequest) (*memberService.MemberResponse, error) {
 	return m.client.CreateMember(ctx, arg)
 }
 
-func (m *memberClient) GetProjectMembers(ctx context.Context, projectId string) ([]*memberService.Member, error) {
+func (m *memberClient) GetProjectMembers(ctx context.Context, projectId string) ([]*memberService.MemberResponse, error) {
 	result, err := m.client.GetMembers(ctx, &memberService.GetMembersRequest{ProjectId: projectId})
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ func (m *memberClient) GetProjectMembers(ctx context.Context, projectId string) 
 	return result.Members, nil
 }
 
-func (m *memberClient) UpdateProjectMember(ctx context.Context, arg *memberService.MemberRequest) (*memberService.Member, error) {
+func (m *memberClient) UpdateProjectMember(ctx context.Context, arg *memberService.MemberRequest) (*memberService.MemberResponse, error) {
 	return m.client.UpdateAuthority(ctx, arg)
 }
 

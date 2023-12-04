@@ -132,7 +132,7 @@ func (x *MemberRequest) GetAuthority() string {
 	return ""
 }
 
-type Member struct {
+type MemberResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -142,8 +142,8 @@ type Member struct {
 	Authority Auth   `protobuf:"varint,3,opt,name=authority,proto3,enum=member.v1.Auth" json:"authority,omitempty"`
 }
 
-func (x *Member) Reset() {
-	*x = Member{}
+func (x *MemberResponse) Reset() {
+	*x = MemberResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_v1_member_service_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -151,13 +151,13 @@ func (x *Member) Reset() {
 	}
 }
 
-func (x *Member) String() string {
+func (x *MemberResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Member) ProtoMessage() {}
+func (*MemberResponse) ProtoMessage() {}
 
-func (x *Member) ProtoReflect() protoreflect.Message {
+func (x *MemberResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_v1_member_service_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -169,26 +169,26 @@ func (x *Member) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Member.ProtoReflect.Descriptor instead.
-func (*Member) Descriptor() ([]byte, []int) {
+// Deprecated: Use MemberResponse.ProtoReflect.Descriptor instead.
+func (*MemberResponse) Descriptor() ([]byte, []int) {
 	return file_v1_member_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Member) GetUserId() string {
+func (x *MemberResponse) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *Member) GetProjectId() string {
+func (x *MemberResponse) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *Member) GetAuthority() Auth {
+func (x *MemberResponse) GetAuthority() Auth {
 	if x != nil {
 		return x.Authority
 	}
@@ -247,7 +247,7 @@ type ListMembers struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Members []*Member `protobuf:"bytes,1,rep,name=members,proto3" json:"members,omitempty"`
+	Members []*MemberResponse `protobuf:"bytes,1,rep,name=members,proto3" json:"members,omitempty"`
 }
 
 func (x *ListMembers) Reset() {
@@ -282,7 +282,7 @@ func (*ListMembers) Descriptor() ([]byte, []int) {
 	return file_v1_member_service_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ListMembers) GetMembers() []*Member {
+func (x *ListMembers) GetMembers() []*MemberResponse {
 	if x != nil {
 		return x.Members
 	}
@@ -468,7 +468,7 @@ var file_v1_member_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_v1_member_service_proto_goTypes = []interface{}{
 	(Auth)(0),                    // 0: member.v1.auth
 	(*MemberRequest)(nil),        // 1: member.v1.MemberRequest
-	(*Member)(nil),               // 2: member.v1.Member
+	(*MemberResponse)(nil),       // 2: member.v1.MemberResponse
 	(*GetMembersRequest)(nil),    // 3: member.v1.GetMembersRequest
 	(*ListMembers)(nil),          // 4: member.v1.ListMembers
 	(*DeleteMemberRequest)(nil),  // 5: member.v1.DeleteMemberRequest
@@ -511,7 +511,7 @@ func file_v1_member_service_proto_init() {
 			}
 		}
 		file_v1_member_service_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Member); i {
+			switch v := v.(*MemberResponse); i {
 			case 0:
 				return &v.state
 			case 1:

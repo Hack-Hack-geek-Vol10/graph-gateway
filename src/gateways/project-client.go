@@ -7,7 +7,7 @@ import (
 )
 
 type projectClient struct {
-	client projectService.ProjectServiceClient
+	client projectService.ProjectClient
 }
 
 type ProjectClient interface {
@@ -19,7 +19,7 @@ type ProjectClient interface {
 	DeleteProject(ctx context.Context, projectId string) (string, error)
 }
 
-func NewProjectClient(client projectService.ProjectServiceClient) ProjectClient {
+func NewProjectClient(client projectService.ProjectClient) ProjectClient {
 	return &projectClient{
 		client: client,
 	}
