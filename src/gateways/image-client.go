@@ -9,7 +9,7 @@ import (
 )
 
 type imageClient struct {
-	client imageService.ImageServiceClient
+	client imageService.ImageClient
 }
 
 type ImageClient interface {
@@ -17,7 +17,7 @@ type ImageClient interface {
 	DeleteImage(ctx context.Context, key string) (*imageService.DeleteImageResponse, error)
 }
 
-func NewImageClient(client imageService.ImageServiceClient) ImageClient {
+func NewImageClient(client imageService.ImageClient) ImageClient {
 	return &imageClient{
 		client: client,
 	}

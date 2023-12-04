@@ -7,7 +7,7 @@ import (
 )
 
 type userClient struct {
-	client userService.UserServiceClient
+	client userService.UserClient
 }
 
 type UserClient interface {
@@ -15,7 +15,7 @@ type UserClient interface {
 	GetOneUser(ctx context.Context, userId string) (*userService.UserDetail, error)
 }
 
-func NewUserClien(client userService.UserServiceClient) UserClient {
+func NewUserClien(client userService.UserClient) UserClient {
 	return &userClient{
 		client: client,
 	}
