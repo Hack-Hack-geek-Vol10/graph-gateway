@@ -27,14 +27,14 @@ func Server() {
 		Debug:            false,
 	})
 
-	resolver, err := NewResolver()
+	app, err := newrelic.NewApplication(
+		newrelic.ConfigFromEnvironment(),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	app, err := newrelic.NewApplication(
-		newrelic.ConfigFromEnvironment(),
-	)
+	resolver, err := NewResolver(app)
 	if err != nil {
 		log.Fatal(err)
 	}
