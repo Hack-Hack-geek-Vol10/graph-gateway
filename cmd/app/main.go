@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	google.ParseGoogleJWKs("./jwks.json")
+	google.GetGoogleJWKs()
 	config.LoadEnv()
 }
 

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/rs/cors"
 	"github.com/schema-creator/graph-gateway/cmd/config"
 	"github.com/schema-creator/graph-gateway/src/internal"
 	"github.com/schema-creator/graph-gateway/src/middleware"
@@ -18,13 +18,20 @@ import (
 func Server() {
 	mux := http.NewServeMux()
 
-	resolber, err := NewResolver()
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*", "http://localhost:3000"},
+		AllowedHeaders:   []string{"*", "Content-Type", "Authorization"},
+		AllowedMethods:   []string{"POST"},
+		AllowCredentials: true,
+		Debug:            true,
+	})
+
+	resolver, err := NewResolver()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	mux.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	mux.Handle("/query", middleware.FirebaseAuth(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolber}))))
+	mux.Handle("/query", c.Handler(middleware.FirebaseAuth(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolver})))))
 
 	srv := &http.Server{
 		Addr:    ":" + config.Config.Server.Port,
