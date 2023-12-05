@@ -26,6 +26,7 @@ type MemberClient interface {
 	GetMembers(ctx context.Context, in *GetMembersRequest, opts ...grpc.CallOption) (*ListMembers, error)
 	UpdateAuthority(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*MemberResponse, error)
 	DeleteMember(ctx context.Context, in *DeleteMemberRequest, opts ...grpc.CallOption) (*DeleteMemberResponse, error)
+	DeleteAllMembers(ctx context.Context, in *DeleteAllMemberRequest, opts ...grpc.CallOption) (*DeleteMemberResponse, error)
 }
 
 type memberClient struct {
@@ -72,6 +73,15 @@ func (c *memberClient) DeleteMember(ctx context.Context, in *DeleteMemberRequest
 	return out, nil
 }
 
+func (c *memberClient) DeleteAllMembers(ctx context.Context, in *DeleteAllMemberRequest, opts ...grpc.CallOption) (*DeleteMemberResponse, error) {
+	out := new(DeleteMemberResponse)
+	err := c.cc.Invoke(ctx, "/member.v1.Member/DeleteAllMembers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MemberServer is the server API for Member service.
 // All implementations must embed UnimplementedMemberServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type MemberServer interface {
 	GetMembers(context.Context, *GetMembersRequest) (*ListMembers, error)
 	UpdateAuthority(context.Context, *MemberRequest) (*MemberResponse, error)
 	DeleteMember(context.Context, *DeleteMemberRequest) (*DeleteMemberResponse, error)
+	DeleteAllMembers(context.Context, *DeleteAllMemberRequest) (*DeleteMemberResponse, error)
 	mustEmbedUnimplementedMemberServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedMemberServer) UpdateAuthority(context.Context, *MemberRequest
 }
 func (UnimplementedMemberServer) DeleteMember(context.Context, *DeleteMemberRequest) (*DeleteMemberResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteMember not implemented")
+}
+func (UnimplementedMemberServer) DeleteAllMembers(context.Context, *DeleteAllMemberRequest) (*DeleteMemberResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAllMembers not implemented")
 }
 func (UnimplementedMemberServer) mustEmbedUnimplementedMemberServer() {}
 
@@ -184,6 +198,24 @@ func _Member_DeleteMember_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Member_DeleteAllMembers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAllMemberRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MemberServer).DeleteAllMembers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/member.v1.Member/DeleteAllMembers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MemberServer).DeleteAllMembers(ctx, req.(*DeleteAllMemberRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Member_ServiceDesc is the grpc.ServiceDesc for Member service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var Member_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteMember",
 			Handler:    _Member_DeleteMember_Handler,
+		},
+		{
+			MethodName: "DeleteAllMembers",
+			Handler:    _Member_DeleteAllMembers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
