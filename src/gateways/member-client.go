@@ -16,6 +16,7 @@ type MemberClient interface {
 	GetProjectMembers(ctx context.Context, txn *newrelic.Transaction, projectId string) ([]*memberService.MemberResponse, error)
 	UpdateProjectMember(ctx context.Context, txn *newrelic.Transaction, arg *memberService.MemberRequest) (*memberService.MemberResponse, error)
 	DeleteProjectMember(ctx context.Context, txn *newrelic.Transaction, arg *memberService.DeleteMemberRequest) (*memberService.DeleteMemberResponse, error)
+	DeleteAllProjectMember(ctx context.Context, txn *newrelic.Transaction, arg *memberService.DeleteAllMemberRequest) (*memberService.DeleteMemberResponse, error)
 }
 
 func NewMemberClient(client memberService.MemberClient) MemberClient {
@@ -46,4 +47,9 @@ func (m *memberClient) UpdateProjectMember(ctx context.Context, txn *newrelic.Tr
 func (m *memberClient) DeleteProjectMember(ctx context.Context, txn *newrelic.Transaction, arg *memberService.DeleteMemberRequest) (*memberService.DeleteMemberResponse, error) {
 	defer txn.StartSegment("DeleteProjectMember-client").End()
 	return m.client.DeleteMember(ctx, arg)
+}
+
+func (m *memberClient) DeleteAllProjectMember(ctx context.Context, txn *newrelic.Transaction, arg *memberService.DeleteAllMemberRequest) (*memberService.DeleteMemberResponse, error) {
+	defer txn.StartSegment("DeleteMember-client").End()
+	return m.client.DeleteAllMembers(ctx, arg)
 }
