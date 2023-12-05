@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	imageService "github.com/schema-creator/graph-gateway/pkg/grpc/image-service/v1"
 )
 
@@ -13,8 +14,8 @@ type imageClient struct {
 }
 
 type ImageClient interface {
-	UploadImage(ctx context.Context, name string, arg *graphql.Upload) (*imageService.UploadImageResponse, error)
-	DeleteImage(ctx context.Context, key string) (*imageService.DeleteImageResponse, error)
+	UploadImage(ctx context.Context, txn *newrelic.Transaction, name string, arg *graphql.Upload) (*imageService.UploadImageResponse, error)
+	DeleteImage(ctx context.Context, txn *newrelic.Transaction, key string) (*imageService.DeleteImageResponse, error)
 }
 
 func NewImageClient(client imageService.ImageClient) ImageClient {
@@ -23,7 +24,8 @@ func NewImageClient(client imageService.ImageClient) ImageClient {
 	}
 }
 
-func (i *imageClient) UploadImage(ctx context.Context, name string, arg *graphql.Upload) (*imageService.UploadImageResponse, error) {
+func (i *imageClient) UploadImage(ctx context.Context, txn *newrelic.Transaction, name string, arg *graphql.Upload) (*imageService.UploadImageResponse, error) {
+	defer txn.StartSegment("UploadImage-client").End()
 	data, err := io.ReadAll(arg.File)
 	if err != nil {
 		return nil, err
@@ -35,6 +37,7 @@ func (i *imageClient) UploadImage(ctx context.Context, name string, arg *graphql
 	})
 }
 
-func (i *imageClient) DeleteImage(ctx context.Context, key string) (*imageService.DeleteImageResponse, error) {
+func (i *imageClient) DeleteImage(ctx context.Context, txn *newrelic.Transaction, key string) (*imageService.DeleteImageResponse, error) {
+	defer txn.StartSegment("DeleteImage-client").End()
 	return i.client.DeleteImage(ctx, &imageService.DeleteImageRequest{Key: key})
 }
