@@ -4,9 +4,9 @@
 scalar Upload
 
 enum Auth {
-  READ_ONLY
-  READ_WRITE
-  OWNER
+  read_only
+  read_write
+  owner
 }
 
 type User {
@@ -29,11 +29,17 @@ type ProjectMember {
   authority: Auth!
 }
 
-type Query {
-  user(userId: ID!): User
-  project(projectId: ID!): Project
-  projects(userId: ID!): [Project]
-  projectMembers(projectId: ID!): [ProjectMember]
+type Save {
+  saveId: ID!
+  projectId: ID!
+  editor: String!
+  object: String!
+}
+
+input CreateSaveInput {
+  projectId: ID!
+  editor: String!
+  object: String!
 }
 
 type Mutation {
@@ -47,4 +53,18 @@ type Mutation {
   createProjectMember(token: String!): ProjectMember
   updateProjectMember(projectId: ID!, userId: ID!, authority: Auth): ProjectMember
   deleteProjectMember(projectId: ID!, userId: ID!): String
+  getEditor(projectId: ID!): Save
+  deleteEditor(projectId: ID!): String
+}
+
+type Query {
+  user(userId: ID!): User
+  project(projectId: ID!): Project
+  projects(userId: ID!): [Project]
+  projectMembers(projectId: ID!): [ProjectMember]
+  save(projectId: ID!): [Editor]
+}
+
+type subscription {
+  createEditor(input: CreateInput!): Save
 }
