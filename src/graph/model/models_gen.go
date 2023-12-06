@@ -31,9 +31,9 @@ type User struct {
 type Auth string
 
 const (
-	AuthReadOnly  Auth = "READ_ONLY"
-	AuthReadWrite Auth = "READ_WRITE"
-	AuthOwner     Auth = "OWNER"
+	AuthReadOnly  Auth = "read_only"
+	AuthReadWrite Auth = "read_write"
+	AuthOwner     Auth = "owner"
 )
 
 var AllAuth = []Auth{

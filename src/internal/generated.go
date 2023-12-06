@@ -480,9 +480,9 @@ var sources = []*ast.Source{
 scalar Upload
 
 enum Auth {
-  READ_ONLY
-  READ_WRITE
-  OWNER
+  read_only
+  read_write
+  owner
 }
 
 type User {
@@ -546,7 +546,7 @@ func (ec *executionContext) field_Mutation_createInviteLink_args(ctx context.Con
 	var arg1 model.Auth
 	if tmp, ok := rawArgs["authority"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("authority"))
-		arg1, err = ec.unmarshalNAuth2githubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx, tmp)
+		arg1, err = ec.unmarshalNAuth2githubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -678,7 +678,7 @@ func (ec *executionContext) field_Mutation_updateProjectMember_args(ctx context.
 	var arg2 *model.Auth
 	if tmp, ok := rawArgs["authority"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("authority"))
-		arg2, err = ec.unmarshalOAuth2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx, tmp)
+		arg2, err = ec.unmarshalOAuth2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -882,7 +882,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -942,7 +942,7 @@ func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1002,7 +1002,7 @@ func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1062,7 +1062,7 @@ func (ec *executionContext) _Mutation_createProject(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Project)
 	fc.Result = res
-	return ec.marshalOProject2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, field.Selections, res)
+	return ec.marshalOProject2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createProject(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1126,7 +1126,7 @@ func (ec *executionContext) _Mutation_updateProject(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Project)
 	fc.Result = res
-	return ec.marshalOProject2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, field.Selections, res)
+	return ec.marshalOProject2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateProject(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1294,7 +1294,7 @@ func (ec *executionContext) _Mutation_createProjectMember(ctx context.Context, f
 	}
 	res := resTmp.(*model.ProjectMember)
 	fc.Result = res
-	return ec.marshalOProjectMember2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx, field.Selections, res)
+	return ec.marshalOProjectMember2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createProjectMember(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1354,7 +1354,7 @@ func (ec *executionContext) _Mutation_updateProjectMember(ctx context.Context, f
 	}
 	res := resTmp.(*model.ProjectMember)
 	fc.Result = res
-	return ec.marshalOProjectMember2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx, field.Selections, res)
+	return ec.marshalOProjectMember2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateProjectMember(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1777,7 +1777,7 @@ func (ec *executionContext) _ProjectMember_authority(ctx context.Context, field 
 	}
 	res := resTmp.(model.Auth)
 	fc.Result = res
-	return ec.marshalNAuth2githubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx, field.Selections, res)
+	return ec.marshalNAuth2githubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProjectMember_authority(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1818,7 +1818,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1878,7 +1878,7 @@ func (ec *executionContext) _Query_project(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Project)
 	fc.Result = res
-	return ec.marshalOProject2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, field.Selections, res)
+	return ec.marshalOProject2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_project(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1942,7 +1942,7 @@ func (ec *executionContext) _Query_projects(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*model.Project)
 	fc.Result = res
-	return ec.marshalOProject2ᚕᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, field.Selections, res)
+	return ec.marshalOProject2ᚕᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_projects(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2006,7 +2006,7 @@ func (ec *executionContext) _Query_projectMembers(ctx context.Context, field gra
 	}
 	res := resTmp.([]*model.ProjectMember)
 	fc.Result = res
-	return ec.marshalOProjectMember2ᚕᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx, field.Selections, res)
+	return ec.marshalOProjectMember2ᚕᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_projectMembers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4774,13 +4774,13 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNAuth2githubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx context.Context, v interface{}) (model.Auth, error) {
+func (ec *executionContext) unmarshalNAuth2githubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx context.Context, v interface{}) (model.Auth, error) {
 	var res model.Auth
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAuth2githubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx context.Context, sel ast.SelectionSet, v model.Auth) graphql.Marshaler {
+func (ec *executionContext) marshalNAuth2githubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx context.Context, sel ast.SelectionSet, v model.Auth) graphql.Marshaler {
 	return v
 }
 
@@ -5082,7 +5082,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) unmarshalOAuth2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx context.Context, v interface{}) (*model.Auth, error) {
+func (ec *executionContext) unmarshalOAuth2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx context.Context, v interface{}) (*model.Auth, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5091,7 +5091,7 @@ func (ec *executionContext) unmarshalOAuth2ᚖgithubᚗcomᚋHackᚑHackᚑgeek�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOAuth2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx context.Context, sel ast.SelectionSet, v *model.Auth) graphql.Marshaler {
+func (ec *executionContext) marshalOAuth2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐAuth(ctx context.Context, sel ast.SelectionSet, v *model.Auth) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5124,7 +5124,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOProject2ᚕᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx context.Context, sel ast.SelectionSet, v []*model.Project) graphql.Marshaler {
+func (ec *executionContext) marshalOProject2ᚕᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx context.Context, sel ast.SelectionSet, v []*model.Project) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5151,7 +5151,7 @@ func (ec *executionContext) marshalOProject2ᚕᚖgithubᚗcomᚋHackᚑHackᚑg
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOProject2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, sel, v[i])
+			ret[i] = ec.marshalOProject2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5165,14 +5165,14 @@ func (ec *executionContext) marshalOProject2ᚕᚖgithubᚗcomᚋHackᚑHackᚑg
 	return ret
 }
 
-func (ec *executionContext) marshalOProject2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx context.Context, sel ast.SelectionSet, v *model.Project) graphql.Marshaler {
+func (ec *executionContext) marshalOProject2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProject(ctx context.Context, sel ast.SelectionSet, v *model.Project) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Project(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOProjectMember2ᚕᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx context.Context, sel ast.SelectionSet, v []*model.ProjectMember) graphql.Marshaler {
+func (ec *executionContext) marshalOProjectMember2ᚕᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx context.Context, sel ast.SelectionSet, v []*model.ProjectMember) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5199,7 +5199,7 @@ func (ec *executionContext) marshalOProjectMember2ᚕᚖgithubᚗcomᚋHackᚑHa
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOProjectMember2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx, sel, v[i])
+			ret[i] = ec.marshalOProjectMember2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5213,7 +5213,7 @@ func (ec *executionContext) marshalOProjectMember2ᚕᚖgithubᚗcomᚋHackᚑHa
 	return ret
 }
 
-func (ec *executionContext) marshalOProjectMember2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx context.Context, sel ast.SelectionSet, v *model.ProjectMember) graphql.Marshaler {
+func (ec *executionContext) marshalOProjectMember2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐProjectMember(ctx context.Context, sel ast.SelectionSet, v *model.ProjectMember) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5252,7 +5252,7 @@ func (ec *executionContext) marshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgen�
 	return res
 }
 
-func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋHackᚑHackᚑgeekᚑVol10ᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
