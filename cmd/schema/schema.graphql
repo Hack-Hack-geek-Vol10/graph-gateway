@@ -4,9 +4,9 @@
 scalar Upload
 
 enum Auth {
-  READ_ONLY
-  READ_WRITE
-  OWNER
+  read_only
+  read_write
+  owner
 }
 
 type User {
