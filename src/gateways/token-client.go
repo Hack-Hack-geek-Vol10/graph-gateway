@@ -14,6 +14,7 @@ type tokenClient struct {
 type TokenClient interface {
 	CreateToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.CreateTokenRequest) (*tokenService.CreateTokenResponse, error)
 	GetToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.GetTokenRequest) (*tokenService.GetTokenResponse, error)
+	DeleteToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.DeleteTokenRequest) (*tokenService.DeleteTokenResponse, error)
 }
 
 func NewTokenClient(client tokenService.TokenClient) TokenClient {
@@ -30,4 +31,9 @@ func (t *tokenClient) CreateToken(ctx context.Context, txn *newrelic.Transaction
 func (t *tokenClient) GetToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.GetTokenRequest) (*tokenService.GetTokenResponse, error) {
 	defer txn.StartSegment("GetToken-client").End()
 	return t.client.GetToken(ctx, arg)
+}
+
+func (t *tokenClient) DeleteToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.DeleteTokenRequest) (*tokenService.DeleteTokenResponse, error) {
+	defer txn.StartSegment("Delete-client").End()
+	return t.client.DeleteToken(ctx, arg)
 }

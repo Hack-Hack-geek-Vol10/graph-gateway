@@ -168,7 +168,12 @@ func (p *projectService) imageUpload(ctx context.Context, txn *newrelic.Transact
 func (p *projectService) DeleteProject(ctx context.Context, txn *newrelic.Transaction, projectId string) (*string, error) {
 	defer txn.StartSegment("DeleteProject-service").End()
 
-	_, err := p.memberClient.DeleteAllProjectMember(ctx, txn, &member.DeleteAllMemberRequest{ProjectId: projectId})
+	_, err := p.tokenClient.DeleteToken(ctx, txn, &token.DeleteTokenRequest{ProjectId: projectId})
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = p.memberClient.DeleteAllProjectMember(ctx, txn, &member.DeleteAllMemberRequest{ProjectId: projectId})
 	if err != nil {
 		return nil, err
 	}

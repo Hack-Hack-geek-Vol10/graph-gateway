@@ -58,5 +58,8 @@ func (p *projectClient) UpdateProjectTitle(ctx context.Context, txn *newrelic.Tr
 func (p *projectClient) DeleteProject(ctx context.Context, txn *newrelic.Transaction, projectId string) (string, error) {
 	defer txn.StartSegment("DeleteProject-client").End()
 	result, err := p.client.DeleteProject(ctx, &projectService.DeleteProjectRequest{ProjectId: projectId})
-	return result.ProjectId, err
+	if err != nil {
+		return "", err
+	}
+	return result.ProjectId, nil
 }
