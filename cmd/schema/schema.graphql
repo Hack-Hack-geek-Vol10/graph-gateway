@@ -53,8 +53,6 @@ type Mutation {
   createProjectMember(token: String!): ProjectMember
   updateProjectMember(projectId: ID!, userId: ID!, authority: Auth): ProjectMember
   deleteProjectMember(projectId: ID!, userId: ID!): String
-  getEditor(projectId: ID!): Save
-  deleteEditor(projectId: ID!): String
 }
 
 type Query {
@@ -62,9 +60,9 @@ type Query {
   project(projectId: ID!): Project
   projects(userId: ID!): [Project]
   projectMembers(projectId: ID!): [ProjectMember]
-  save(projectId: ID!): [Editor]
+  save(projectId: ID!): [Save]
 }
 
 type subscription {
-  createEditor(input: CreateInput!): Save
+  createSave(input: CreateSaveInput!): Save
 }
