@@ -13,7 +13,7 @@ type saveService struct {
 }
 
 type SaveService interface {
-	CreateSave(ctx context.Context, arg *model.CreateSaveInput) error
+	CreateSave(ctx context.Context, arg *model.CreateSaveInput) (*save.CreateSaveResponse, error)
 	GetSave(ctx context.Context, projectID string) (*model.Save, error)
 }
 
@@ -22,19 +22,17 @@ func NewSaveService() SaveService {
 }
 
 // Subscriptions
-func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput) error {
-	s.Mutex.Lock()
-
-	_, err := s.saveClient.CreateSave(ctx, &save.CreateSaveRequest{
+func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput) (*save.CreateSaveResponse, error) {
+	saveID, err := s.saveClient.CreateSave(ctx, &save.CreateSaveRequest{
 		ProjectId: arg.ProjectID,
 		Editor:    arg.Editor,
 		Object:    arg.Object,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return saveID, err
 }
 
 func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Save, error) {

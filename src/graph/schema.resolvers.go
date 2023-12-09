@@ -63,6 +63,11 @@ func (r *mutationResolver) DeleteProjectMember(ctx context.Context, projectID st
 	return r.MemberService.DeleteMember(ctx, projectID, userID)
 }
 
+// CreateSave is the resolver for the createSave field.
+func (r *mutationResolver) CreateSave(ctx context.Context, input model.CreateSaveInput) (*string, error) {
+	panic(fmt.Errorf("not implemented: CreateSave - createSave"))
+}
+
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, error) {
 	return r.UserService.GetUser(ctx, userID)
@@ -88,9 +93,9 @@ func (r *queryResolver) Save(ctx context.Context, projectID string) (*model.Save
 	return r.SaveService.GetSave(ctx, projectID)
 }
 
-// CreateSave is the resolver for the createSave field.
-func (r *subscriptionResolver) CreateSave(ctx context.Context, input model.CreateSaveInput) (<-chan *string, error) {
-	return r.SaveService.CreateSave(ctx, &input)
+// PostEditor is the resolver for the postEditor field.
+func (r *subscriptionResolver) PostEditor(ctx context.Context, userID string) (<-chan *model.Save, error) {
+	panic(fmt.Errorf("not implemented: PostEditor - postEditor"))
 }
 
 // Mutation returns internal.MutationResolver implementation.
