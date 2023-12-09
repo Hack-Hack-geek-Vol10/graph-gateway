@@ -62,6 +62,6 @@ type Query {
   save(projectId: ID!): [Save]
 }
 
-type subscription {
+type Subscription {
   createSave(input: CreateSaveInput!): ID
 }

@@ -88,11 +88,20 @@ func (r *queryResolver) Save(ctx context.Context, projectID string) ([]*model.Sa
 	panic(fmt.Errorf("not implemented: Save - save"))
 }
 
+// CreateSave is the resolver for the createSave field.
+func (r *subscriptionResolver) CreateSave(ctx context.Context, input model.CreateSaveInput) (<-chan *string, error) {
+	panic(fmt.Errorf("not implemented: CreateSave - createSave"))
+}
+
 // Mutation returns internal.MutationResolver implementation.
 func (r *Resolver) Mutation() internal.MutationResolver { return &mutationResolver{r} }
 
 // Query returns internal.QueryResolver implementation.
 func (r *Resolver) Query() internal.QueryResolver { return &queryResolver{r} }
 
+// Subscription returns internal.SubscriptionResolver implementation.
+func (r *Resolver) Subscription() internal.SubscriptionResolver { return &subscriptionResolver{r} }
+
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type subscriptionResolver struct{ *Resolver }

@@ -40,10 +40,6 @@ type User struct {
 	Name   string `json:"name"`
 }
 
-type Subscription struct {
-	CreateSave *string `json:"createSave,omitempty"`
-}
-
 type Auth string
 
 const (

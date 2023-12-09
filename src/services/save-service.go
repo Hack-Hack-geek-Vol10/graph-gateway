@@ -2,12 +2,10 @@ package services
 
 import (
 	"context"
-	"fmt"
 
 	save "github.com/schema-creator/graph-gateway/pkg/grpc/save-service/v1"
 	"github.com/schema-creator/graph-gateway/src/gateways"
 	"github.com/schema-creator/graph-gateway/src/graph/model"
-	"github.com/schema-creator/graph-gateway/src/middleware"
 )
 
 type saveService struct {
@@ -25,10 +23,10 @@ func NewSaveService() SaveService {
 
 // Subscriptions
 func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput) error {
-	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
-	if payload == nil {
-		return fmt.Errorf("no token found")
-	}
+	// payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
+	// if payload == nil {
+	// 	return fmt.Errorf("no token found")
+	// }
 
 	_, err := s.saveClient.CreateSave(ctx, &save.CreateSaveRequest{
 		ProjectId: arg.ProjectID,
