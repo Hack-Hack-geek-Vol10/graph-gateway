@@ -65,7 +65,7 @@ func (r *mutationResolver) DeleteProjectMember(ctx context.Context, projectID st
 
 // CreateSave is the resolver for the createSave field.
 func (r *mutationResolver) CreateSave(ctx context.Context, input model.CreateSaveInput) (*string, error) {
-	panic(fmt.Errorf("not implemented: CreateSave - createSave"))
+	return r.SaveService.CreateSave(ctx, &input)
 }
 
 // User is the resolver for the user field.
