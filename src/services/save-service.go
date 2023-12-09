@@ -15,6 +15,7 @@ type saveService struct {
 
 type SaveService interface {
 	CreateSave(ctx context.Context, arg *model.CreateSaveInput) error
+	GetSave(ctx context.Context, projectID string) (*model.Save, error)
 }
 
 func NewSaveService() SaveService {
@@ -38,4 +39,18 @@ func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput
 	}
 
 	return nil
+}
+
+func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Save, error) {
+	result, err := s.saveClient.GetSave(ctx, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Save{
+		SaveID:    result.Save.SaveId,
+		ProjectID: result.Save.ProjectId,
+		Editor:    result.Save.Editor,
+		Object:    result.Save.Object,
+	}, nil
 }
