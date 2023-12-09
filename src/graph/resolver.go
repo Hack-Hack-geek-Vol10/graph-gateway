@@ -1,6 +1,10 @@
 package graph
 
-import "github.com/schema-creator/graph-gateway/src/services"
+import (
+	"sync"
+
+	"github.com/schema-creator/graph-gateway/src/services"
+)
 
 // This file will not be regenerated automatically.
 //
@@ -10,4 +14,8 @@ type Resolver struct {
 	UserService    services.UserService
 	ProjectService services.ProjectService
 	MemberService  services.MemberService
+	SaveService    services.SaveService
+	mutex sync.Mutex,
 }
+
+func newResolver(saveClient *saveClient.Client) *Resolver {
