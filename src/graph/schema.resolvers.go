@@ -84,13 +84,13 @@ func (r *queryResolver) ProjectMembers(ctx context.Context, projectID string) ([
 }
 
 // Save is the resolver for the save field.
-func (r *queryResolver) Save(ctx context.Context, projectID string) ([]*model.Save, error) {
-	panic(fmt.Errorf("not implemented: Save - save"))
+func (r *queryResolver) Save(ctx context.Context, projectID string) (*model.Save, error) {
+	return r.SaveService.GetSave(ctx, projectID)
 }
 
 // CreateSave is the resolver for the createSave field.
 func (r *subscriptionResolver) CreateSave(ctx context.Context, input model.CreateSaveInput) (<-chan *string, error) {
-	panic(fmt.Errorf("not implemented: CreateSave - createSave"))
+	return r.SaveService.CreateSave(ctx, &input)
 }
 
 // Mutation returns internal.MutationResolver implementation.

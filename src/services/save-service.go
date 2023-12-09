@@ -23,10 +23,7 @@ func NewSaveService() SaveService {
 
 // Subscriptions
 func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput) error {
-	// payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
-	// if payload == nil {
-	// 	return fmt.Errorf("no token found")
-	// }
+	s.Mutex.Lock()
 
 	_, err := s.saveClient.CreateSave(ctx, &save.CreateSaveRequest{
 		ProjectId: arg.ProjectID,
