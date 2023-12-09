@@ -59,7 +59,7 @@ func NewResolver() (*graph.Resolver, error) {
 
 	log.Println("memberConn ok")
 	return &graph.Resolver{
-		UserService: services.NewUserService(gateways.NewUserClien(userService.NewUserClient(userConn))),
+		UserService: services.NewUserService(gateways.NewUserClient(userService.NewUserClient(userConn))),
 		ProjectService: services.NewProjectService(
 			gateways.NewProjectClient(projectService.NewProjectClient(projectConn)),
 			gateways.NewMemberClient(memberService.NewMemberClient(memberConn)),

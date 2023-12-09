@@ -82,10 +82,9 @@ type ComplexityRoot struct {
 	}
 
 	Save struct {
-		Editor    func(childComplexity int) int
-		Object    func(childComplexity int) int
-		ProjectID func(childComplexity int) int
-		SaveID    func(childComplexity int) int
+		Editor func(childComplexity int) int
+		Object func(childComplexity int) int
+		SaveID func(childComplexity int) int
 	}
 
 	User struct {
@@ -388,13 +387,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Save.Object(childComplexity), true
 
-	case "Save.projectId":
-		if e.complexity.Save.ProjectID == nil {
-			break
-		}
-
-		return e.complexity.Save.ProjectID(childComplexity), true
-
 	case "Save.saveId":
 		if e.complexity.Save.SaveID == nil {
 			break
@@ -574,7 +566,6 @@ type ProjectMember {
 
 type Save {
   saveId: ID!
-  projectId: ID!
   editor: String!
   object: String!
 }
@@ -607,7 +598,7 @@ type Query {
 }
 
 type subscription {
-  createSave(input: CreateSaveInput!): Save
+  createSave(input: CreateSaveInput!): ID
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -2194,8 +2185,6 @@ func (ec *executionContext) fieldContext_Query_save(ctx context.Context, field g
 			switch field.Name {
 			case "saveId":
 				return ec.fieldContext_Save_saveId(ctx, field)
-			case "projectId":
-				return ec.fieldContext_Save_projectId(ctx, field)
 			case "editor":
 				return ec.fieldContext_Save_editor(ctx, field)
 			case "object":
@@ -2379,50 +2368,6 @@ func (ec *executionContext) _Save_saveId(ctx context.Context, field graphql.Coll
 }
 
 func (ec *executionContext) fieldContext_Save_saveId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Save",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Save_projectId(ctx context.Context, field graphql.CollectedField, obj *model.Save) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Save_projectId(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ProjectID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Save_projectId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Save",
 		Field:      field,
@@ -4447,9 +4392,9 @@ func (ec *executionContext) _subscription_createSave(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Save)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOSave2ᚖgithubᚗcomᚋschemaᚑcreatorᚋgraphᚑgatewayᚋsrcᚋgraphᚋmodelᚐSave(ctx, field.Selections, res)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_subscription_createSave(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4459,17 +4404,7 @@ func (ec *executionContext) fieldContext_subscription_createSave(ctx context.Con
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "saveId":
-				return ec.fieldContext_Save_saveId(ctx, field)
-			case "projectId":
-				return ec.fieldContext_Save_projectId(ctx, field)
-			case "editor":
-				return ec.fieldContext_Save_editor(ctx, field)
-			case "object":
-				return ec.fieldContext_Save_object(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Save", field.Name)
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	defer func() {
@@ -4887,11 +4822,6 @@ func (ec *executionContext) _Save(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = graphql.MarshalString("Save")
 		case "saveId":
 			out.Values[i] = ec._Save_saveId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "projectId":
-			out.Values[i] = ec._Save_projectId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -5691,6 +5621,22 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	res := graphql.MarshalBoolean(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalID(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalID(*v)
 	return res
 }
 

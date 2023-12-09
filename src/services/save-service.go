@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	save "github.com/schema-creator/graph-gateway/pkg/grpc/save-service/v1"
 	"github.com/schema-creator/graph-gateway/src/gateways"
 	"github.com/schema-creator/graph-gateway/src/graph/model"
 	"github.com/schema-creator/graph-gateway/src/middleware"
@@ -42,15 +43,16 @@ func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput
 }
 
 func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Save, error) {
-	result, err := s.saveClient.GetSave(ctx, projectID)
+	result, err := s.saveClient.GetSave(ctx, &save.GetSaveRequest{
+		ProjectId: projectID,
+	})
 	if err != nil {
 		return nil, err
 	}
 
 	return &model.Save{
-		SaveID:    result.Save.SaveId,
-		ProjectID: result.Save.ProjectId,
-		Editor:    result.Save.Editor,
-		Object:    result.Save.Object,
+		SaveID: result.SaveId,
+		Editor: result.Editor,
+		Object: result.Object,
 	}, nil
 }

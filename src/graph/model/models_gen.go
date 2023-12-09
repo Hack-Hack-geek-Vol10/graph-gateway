@@ -29,10 +29,9 @@ type ProjectMember struct {
 }
 
 type Save struct {
-	SaveID    string `json:"saveId"`
-	ProjectID string `json:"projectId"`
-	Editor    string `json:"editor"`
-	Object    string `json:"object"`
+	SaveID string `json:"saveId"`
+	Editor string `json:"editor"`
+	Object string `json:"object"`
 }
 
 type User struct {
@@ -42,7 +41,7 @@ type User struct {
 }
 
 type Subscription struct {
-	CreateSave *Save `json:"createSave,omitempty"`
+	CreateSave *string `json:"createSave,omitempty"`
 }
 
 type Auth string

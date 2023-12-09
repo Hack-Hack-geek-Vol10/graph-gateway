@@ -31,7 +31,6 @@ type ProjectMember {
 
 type Save {
   saveId: ID!
-  projectId: ID!
   editor: String!
   object: String!
 }
@@ -64,5 +63,5 @@ type Query {
 }
 
 type subscription {
-  createSave(input: CreateSaveInput!): Save
+  createSave(input: CreateSaveInput!): ID
 }

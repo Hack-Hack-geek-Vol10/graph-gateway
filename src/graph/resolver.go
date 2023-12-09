@@ -1,8 +1,6 @@
 package graph
 
 import (
-	"sync"
-
 	"github.com/schema-creator/graph-gateway/src/services"
 )
 
@@ -15,7 +13,6 @@ type Resolver struct {
 	ProjectService services.ProjectService
 	MemberService  services.MemberService
 	SaveService    services.SaveService
-	mutex sync.Mutex,
 }
 
-func newResolver(saveClient *saveClient.Client) *Resolver {
+// func newResolver(saveClient *saveClient.Client) *Resolver {}
