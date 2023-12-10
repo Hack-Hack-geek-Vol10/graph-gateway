@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"sync"
 
 	save "github.com/schema-creator/graph-gateway/pkg/grpc/save-service/v1"
 	"github.com/schema-creator/graph-gateway/src/gateways"
@@ -9,7 +10,9 @@ import (
 )
 
 type saveService struct {
-	saveClient gateways.SaveClient
+	saveClient          gateways.SaveClient
+	ChannelsByProjectID map[string][]chan<- *model.Save
+	Mutex               sync.Mutex
 }
 
 type SaveService interface {
@@ -48,4 +51,27 @@ func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Sav
 		Editor: result.Editor,
 		Object: result.Object,
 	}, nil
+}
+
+func (s *saveService) WsEditor(ctx context.Context, id string) (<-chan *model.Save, error) {
+	s.Mutex.Lock()
+	defer s.Mutex.Unlock()
+
+	ch := make(chan *model.Save, 1)
+	s.ChannelsByProjectID[id] = append(s.ChannelsByProjectID[id], ch)
+
+	// コネクション終了時にチャネルを削除
+	go func() {
+		<-ctx.Done()
+		s.Mutex.Lock()
+		defer s.Mutex.Unlock()
+		for i, c := range s.ChannelsByProjectID[id] {
+			if c == ch {
+				s.ChannelsByProjectID[id] = append(s.ChannelsByProjectID[id][:i], s.ChannelsByProjectID[id][i+1:]...)
+				break
+			}
+		}
+	}()
+
+	return ch, nil
 }
