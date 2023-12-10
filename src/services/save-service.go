@@ -46,6 +46,17 @@ func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Sav
 		return nil, err
 	}
 
+	// チャネルに送信
+	s.Mutex.Lock()
+	defer s.Mutex.Unlock()
+	for _, ch := range s.ChannelsByProjectID[projectID] {
+		ch <- &model.Save{
+			SaveID: result.SaveId,
+			Editor: result.Editor,
+			Object: result.Object,
+		}
+	}
+
 	return &model.Save{
 		SaveID: result.SaveId,
 		Editor: result.Editor,
