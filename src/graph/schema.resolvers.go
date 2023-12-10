@@ -96,7 +96,7 @@ func (r *queryResolver) Save(ctx context.Context, projectID string) (*model.Save
 
 // PostEditor is the resolver for the postEditor field.
 func (r *subscriptionResolver) PostEditor(ctx context.Context, userID string) (<-chan *model.Save, error) {
-	panic(fmt.Errorf("not implemented: PostEditor - postEditor"))
+	return r.SaveService.WsEditor(ctx, userID)
 }
 
 // Mutation returns internal.MutationResolver implementation.

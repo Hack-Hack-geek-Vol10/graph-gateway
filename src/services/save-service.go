@@ -18,10 +18,15 @@ type saveService struct {
 type SaveService interface {
 	CreateSave(ctx context.Context, arg *model.CreateSaveInput) (*save.CreateSaveResponse, error)
 	GetSave(ctx context.Context, projectID string) (*model.Save, error)
+	WsEditor(ctx context.Context, id string) (<-chan *model.Save, error)
 }
 
-func NewSaveService() SaveService {
-	return &saveService{}
+func NewSaveService(saveClient gateways.SaveClient) SaveService {
+	return &saveService{
+		saveClient:          saveClient,
+		ChannelsByProjectID: make(map[string][]chan<- *model.Save),
+		Mutex:               sync.Mutex{},
+	}
 }
 
 // Subscriptions
