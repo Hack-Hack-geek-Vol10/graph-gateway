@@ -14,4 +14,5 @@ type Resolver struct {
 	UserService    services.UserService
 	ProjectService services.ProjectService
 	MemberService  services.MemberService
+	SaveService    services.SaveService
 }

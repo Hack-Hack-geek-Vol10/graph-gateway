@@ -29,11 +29,16 @@ type ProjectMember {
   authority: Auth!
 }
 
-type Query {
-  user(userId: ID!): User
-  project(projectId: ID!): Project
-  projects(userId: ID!): [Project]
-  projectMembers(projectId: ID!): [ProjectMember]
+type Save {
+  saveId: ID!
+  editor: String!
+  object: String!
+}
+
+input CreateSaveInput {
+  projectId: ID!
+  editor: String!
+  object: String!
 }
 
 type Mutation {
@@ -47,4 +52,17 @@ type Mutation {
   createProjectMember(token: String!): ProjectMember
   updateProjectMember(projectId: ID!, userId: ID!, authority: Auth): ProjectMember
   deleteProjectMember(projectId: ID!, userId: ID!): String
+  createSave(input: CreateSaveInput!): ID
+}
+
+type Query {
+  user(userId: ID!): User
+  project(projectId: ID!): Project
+  projects(userId: ID!): [Project]
+  projectMembers(projectId: ID!): [ProjectMember]
+  save(projectId: ID!): Save
+}
+
+type Subscription {
+  postEditor(userId: ID!): Save
 }

@@ -8,6 +8,12 @@ import (
 	"strconv"
 )
 
+type CreateSaveInput struct {
+	ProjectID string `json:"projectId"`
+	Editor    string `json:"editor"`
+	Object    string `json:"object"`
+}
+
 type Project struct {
 	ProjectID  string `json:"projectId"`
 	Title      string `json:"title"`
@@ -20,6 +26,12 @@ type ProjectMember struct {
 	ProjectID string `json:"projectId"`
 	UserID    string `json:"userId"`
 	Authority Auth   `json:"authority"`
+}
+
+type Save struct {
+	SaveID string `json:"saveId"`
+	Editor string `json:"editor"`
+	Object string `json:"object"`
 }
 
 type User struct {
