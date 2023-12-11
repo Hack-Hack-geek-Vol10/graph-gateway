@@ -3,6 +3,7 @@ package server
 import (
 	"log"
 
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/schema-creator/graph-gateway/cmd/config"
 	grpcclient "github.com/schema-creator/graph-gateway/pkg/grpc-client"
 	"github.com/schema-creator/graph-gateway/src/gateways"
@@ -17,7 +18,7 @@ import (
 	userService "github.com/schema-creator/graph-gateway/pkg/grpc/user-service/v1"
 )
 
-func NewResolver() (*graph.Resolver, error) {
+func NewResolver(app *newrelic.Application) (*graph.Resolver, error) {
 	log.Printf(`
 		[server] user-service: %v
 		[server] project-service: %v
@@ -68,7 +69,8 @@ func NewResolver() (*graph.Resolver, error) {
 
 	log.Println("saveConn ok")
 	return &graph.Resolver{
-		UserService: services.NewUserService(gateways.NewUserClient(userService.NewUserClient(userConn))),
+		App:         app,
+		UserService: services.NewUserService(gateways.NewUserClien(userService.NewUserClient(userConn))),
 		ProjectService: services.NewProjectService(
 			gateways.NewProjectClient(projectService.NewProjectClient(projectConn)),
 			gateways.NewMemberClient(memberService.NewMemberClient(memberConn)),

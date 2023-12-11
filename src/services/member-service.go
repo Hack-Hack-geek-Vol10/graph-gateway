@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 
+	"github.com/newrelic/go-agent/v3/newrelic"
 	member "github.com/schema-creator/graph-gateway/pkg/grpc/member-service/v1"
 	v1 "github.com/schema-creator/graph-gateway/pkg/grpc/token-service/v1"
 	"github.com/schema-creator/graph-gateway/src/gateways"
@@ -16,10 +17,10 @@ type memberService struct {
 }
 
 type MemberService interface {
-	CreateMember(ctx context.Context, token string) (*model.ProjectMember, error)
-	GetMembers(ctx context.Context, projectID string) ([]*model.ProjectMember, error)
-	UpdateMember(ctx context.Context, projectID, userID string, authority *model.Auth) (*model.ProjectMember, error)
-	DeleteMember(ctx context.Context, projectID, userID string) (*string, error)
+	CreateMember(ctx context.Context, txn *newrelic.Transaction, token string) (*model.ProjectMember, error)
+	GetMembers(ctx context.Context, txn *newrelic.Transaction, projectID string) ([]*model.ProjectMember, error)
+	UpdateMember(ctx context.Context, txn *newrelic.Transaction, projectID, userID string, authority *model.Auth) (*model.ProjectMember, error)
+	DeleteMember(ctx context.Context, txn *newrelic.Transaction, projectID, userID string) (*string, error)
 }
 
 func NewMemberService(memberClient gateways.MemberClient, tokenClient gateways.TokenClient) MemberService {
@@ -29,17 +30,19 @@ func NewMemberService(memberClient gateways.MemberClient, tokenClient gateways.T
 	}
 }
 
-func (m *memberService) CreateMember(ctx context.Context, token string) (*model.ProjectMember, error) {
+func (m *memberService) CreateMember(ctx context.Context, txn *newrelic.Transaction, token string) (*model.ProjectMember, error) {
+	defer txn.StartSegment("CreateMember-service").End()
+
 	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
 
-	response, err := m.tokenClient.GetToken(ctx, &v1.GetTokenRequest{
+	response, err := m.tokenClient.GetToken(ctx, txn, &v1.GetTokenRequest{
 		Token: token,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := m.memberClient.CreateProjectMember(ctx, &member.MemberRequest{
+	result, err := m.memberClient.CreateProjectMember(ctx, txn, &member.MemberRequest{
 		UserId:    payload.UserId,
 		ProjectId: response.ProjectId,
 		Authority: response.Authority,
@@ -55,8 +58,10 @@ func (m *memberService) CreateMember(ctx context.Context, token string) (*model.
 	}, nil
 }
 
-func (m *memberService) GetMembers(ctx context.Context, projectID string) ([]*model.ProjectMember, error) {
-	result, err := m.memberClient.GetProjectMembers(ctx, projectID)
+func (m *memberService) GetMembers(ctx context.Context, txn *newrelic.Transaction, projectID string) ([]*model.ProjectMember, error) {
+	defer txn.StartSegment("GetMembers-service").End()
+
+	result, err := m.memberClient.GetProjectMembers(ctx, txn, projectID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +78,10 @@ func (m *memberService) GetMembers(ctx context.Context, projectID string) ([]*mo
 	return members, nil
 }
 
-func (m *memberService) UpdateMember(ctx context.Context, projectID, userID string, authority *model.Auth) (*model.ProjectMember, error) {
-	result, err := m.memberClient.UpdateProjectMember(ctx, &member.MemberRequest{
+func (m *memberService) UpdateMember(ctx context.Context, txn *newrelic.Transaction, projectID, userID string, authority *model.Auth) (*model.ProjectMember, error) {
+	defer txn.StartSegment("UpdateMember-service").End()
+
+	result, err := m.memberClient.UpdateProjectMember(ctx, txn, &member.MemberRequest{
 		ProjectId: projectID,
 		UserId:    userID,
 		Authority: authority.String(),
@@ -90,8 +97,10 @@ func (m *memberService) UpdateMember(ctx context.Context, projectID, userID stri
 	}, nil
 }
 
-func (m *memberService) DeleteMember(ctx context.Context, projectID, userID string) (*string, error) {
-	result, err := m.memberClient.DeleteProjectMember(ctx, &member.DeleteMemberRequest{
+func (m *memberService) DeleteMember(ctx context.Context, txn *newrelic.Transaction, projectID, userID string) (*string, error) {
+	defer txn.StartSegment("DeleteMember-service").End()
+
+	result, err := m.memberClient.DeleteProjectMember(ctx, txn, &member.DeleteMemberRequest{
 		ProjectId: projectID,
 		UserId:    userID,
 	})

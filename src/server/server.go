@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rs/cors"
 	"github.com/schema-creator/graph-gateway/cmd/config"
 	"github.com/schema-creator/graph-gateway/src/internal"
@@ -23,15 +24,40 @@ func Server() {
 		AllowedHeaders:   []string{"*", "Content-Type", "Authorization"},
 		AllowedMethods:   []string{"POST"},
 		AllowCredentials: true,
-		Debug:            true,
+		Debug:            false,
 	})
 
-	resolver, err := NewResolver()
+	app, err := newrelic.NewApplication(
+		newrelic.ConfigFromEnvironment(),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	mux.Handle("/query", c.Handler(middleware.FirebaseAuth(handler.NewDefaultServer(internal.NewExecutableSchema(internal.Config{Resolvers: resolver})))))
+	resolver, err := NewResolver(app)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mux.Handle(
+		newrelic.WrapHandle(
+			app,
+			"/query",
+			middleware.Recover(
+				c.Handler(
+					middleware.FirebaseAuth(
+						handler.NewDefaultServer(
+							internal.NewExecutableSchema(
+								internal.Config{
+									Resolvers: resolver,
+								},
+							),
+						),
+					),
+				),
+			),
+		),
+	)
 
 	srv := &http.Server{
 		Addr:    ":" + config.Config.Server.Port,
