@@ -64,5 +64,5 @@ type Query {
 }
 
 type Subscription {
-  postEditor(userId: ID!): Save
+  postEditor(projectId: ID!): Save
 }

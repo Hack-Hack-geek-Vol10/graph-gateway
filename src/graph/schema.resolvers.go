@@ -195,8 +195,8 @@ func (r *queryResolver) Save(ctx context.Context, projectID string) (*model.Save
 }
 
 // PostEditor is the resolver for the postEditor field.
-func (r *subscriptionResolver) PostEditor(ctx context.Context, userID string) (<-chan *model.Save, error) {
-	return r.SaveService.WsEditor(ctx, userID)
+func (r *subscriptionResolver) PostEditor(ctx context.Context, projectID string) (<-chan *model.Save, error) {
+	return r.SaveService.WsEditor(ctx, projectID)
 }
 
 // Mutation returns internal.MutationResolver implementation.

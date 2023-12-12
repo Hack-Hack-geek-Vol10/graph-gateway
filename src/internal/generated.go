@@ -91,7 +91,7 @@ type ComplexityRoot struct {
 	}
 
 	Subscription struct {
-		PostEditor func(childComplexity int, userID string) int
+		PostEditor func(childComplexity int, projectID string) int
 	}
 
 	User struct {
@@ -122,7 +122,7 @@ type QueryResolver interface {
 	Save(ctx context.Context, projectID string) (*model.Save, error)
 }
 type SubscriptionResolver interface {
-	PostEditor(ctx context.Context, userID string) (<-chan *model.Save, error)
+	PostEditor(ctx context.Context, projectID string) (<-chan *model.Save, error)
 }
 
 type executableSchema struct {
@@ -423,7 +423,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Subscription.PostEditor(childComplexity, args["userId"].(string)), true
+		return e.complexity.Subscription.PostEditor(childComplexity, args["projectId"].(string)), true
 
 	case "User.email":
 		if e.complexity.User.Email == nil {
@@ -635,7 +635,7 @@ type Query {
 }
 
 type Subscription {
-  postEditor(userId: ID!): Save
+  postEditor(projectId: ID!): Save
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -966,14 +966,14 @@ func (ec *executionContext) field_Subscription_postEditor_args(ctx context.Conte
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+	if tmp, ok := rawArgs["projectId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("projectId"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["userId"] = arg0
+	args["projectId"] = arg0
 	return args, nil
 }
 
@@ -2586,7 +2586,7 @@ func (ec *executionContext) _Subscription_postEditor(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().PostEditor(rctx, fc.Args["userId"].(string))
+		return ec.resolvers.Subscription().PostEditor(rctx, fc.Args["projectId"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

@@ -69,21 +69,21 @@ func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Sav
 	}, nil
 }
 
-func (s *saveService) WsEditor(ctx context.Context, id string) (<-chan *model.Save, error) {
+func (s *saveService) WsEditor(ctx context.Context, pid string) (<-chan *model.Save, error) {
 	s.Mutex.Lock()
 	defer s.Mutex.Unlock()
 
 	ch := make(chan *model.Save, 1)
-	s.ChannelsByProjectID[id] = append(s.ChannelsByProjectID[id], ch)
+	s.ChannelsByProjectID[pid] = append(s.ChannelsByProjectID[pid], ch)
 
 	// コネクション終了時にチャネルを削除
 	go func() {
 		<-ctx.Done()
 		s.Mutex.Lock()
 		defer s.Mutex.Unlock()
-		for i, c := range s.ChannelsByProjectID[id] {
+		for i, c := range s.ChannelsByProjectID[pid] {
 			if c == ch {
-				s.ChannelsByProjectID[id] = append(s.ChannelsByProjectID[id][:i], s.ChannelsByProjectID[id][i+1:]...)
+				s.ChannelsByProjectID[pid] = append(s.ChannelsByProjectID[pid][:i], s.ChannelsByProjectID[pid][i+1:]...)
 				break
 			}
 		}
