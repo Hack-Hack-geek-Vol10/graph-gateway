@@ -70,7 +70,7 @@ func NewResolver(app *newrelic.Application) (*graph.Resolver, error) {
 	log.Println("saveConn ok")
 	return &graph.Resolver{
 		App:         app,
-		UserService: services.NewUserService(gateways.NewUserClien(userService.NewUserClient(userConn))),
+		UserService: services.NewUserService(gateways.NewUserClient(userService.NewUserClient(userConn))),
 		ProjectService: services.NewProjectService(
 			gateways.NewProjectClient(projectService.NewProjectClient(projectConn)),
 			gateways.NewMemberClient(memberService.NewMemberClient(memberConn)),
