@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -17,6 +18,8 @@ import (
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, name string) (*model.User, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("CreateUser").End()
 
@@ -40,6 +43,8 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, userID string) (*mode
 
 // CreateProject is the resolver for the createProject field.
 func (r *mutationResolver) CreateProject(ctx context.Context, title string) (*model.Project, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("CreateProject").End()
 
@@ -54,6 +59,8 @@ func (r *mutationResolver) CreateProject(ctx context.Context, title string) (*mo
 
 // UpdateProject is the resolver for the updateProject field.
 func (r *mutationResolver) UpdateProject(ctx context.Context, projectID string, title *string, lastImage *graphql.Upload) (*model.Project, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("UpdateProject").End()
 
@@ -68,6 +75,8 @@ func (r *mutationResolver) UpdateProject(ctx context.Context, projectID string, 
 
 // DeleteProject is the resolver for the deleteProject field.
 func (r *mutationResolver) DeleteProject(ctx context.Context, projectID string) (*string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("DeleteProject").End()
 
@@ -81,6 +90,8 @@ func (r *mutationResolver) DeleteProject(ctx context.Context, projectID string) 
 
 // CreateInviteLink is the resolver for the createInviteLink field.
 func (r *mutationResolver) CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("CreateInviteLink").End()
 
@@ -94,6 +105,8 @@ func (r *mutationResolver) CreateInviteLink(ctx context.Context, projectID strin
 
 // CreateProjectMember is the resolver for the createProjectMember field.
 func (r *mutationResolver) CreateProjectMember(ctx context.Context, token string) (*model.ProjectMember, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("CreateProjectMember").End()
 
@@ -107,6 +120,8 @@ func (r *mutationResolver) CreateProjectMember(ctx context.Context, token string
 
 // UpdateProjectMember is the resolver for the updateProjectMember field.
 func (r *mutationResolver) UpdateProjectMember(ctx context.Context, projectID string, userID string, authority *model.Auth) (*model.ProjectMember, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("UpdateProjectMember").End()
 
@@ -120,6 +135,8 @@ func (r *mutationResolver) UpdateProjectMember(ctx context.Context, projectID st
 
 // DeleteProjectMember is the resolver for the deleteProjectMember field.
 func (r *mutationResolver) DeleteProjectMember(ctx context.Context, projectID string, userID string) (*string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("DeleteProjectMember").End()
 
@@ -133,12 +150,16 @@ func (r *mutationResolver) DeleteProjectMember(ctx context.Context, projectID st
 
 // CreateSave is the resolver for the createSave field.
 func (r *mutationResolver) CreateSave(ctx context.Context, input model.CreateSaveInput) (*string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	param, err := r.SaveService.CreateSave(ctx, &input)
 	return &param.SaveId, err
 }
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("GetUser").End()
 
@@ -152,6 +173,8 @@ func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, e
 
 // Project is the resolver for the project field.
 func (r *queryResolver) Project(ctx context.Context, projectID string) (*model.Project, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("GetProject").End()
 
@@ -165,6 +188,8 @@ func (r *queryResolver) Project(ctx context.Context, projectID string) (*model.P
 
 // Projects is the resolver for the projects field.
 func (r *queryResolver) Projects(ctx context.Context, userID string) ([]*model.Project, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("GetProjects").End()
 
@@ -178,6 +203,8 @@ func (r *queryResolver) Projects(ctx context.Context, userID string) ([]*model.P
 
 // ProjectMembers is the resolver for the projectMembers field.
 func (r *queryResolver) ProjectMembers(ctx context.Context, projectID string) ([]*model.ProjectMember, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	txn := newrelic.FromContext(ctx)
 	defer txn.StartSegment("GetProjectMembers").End()
 
@@ -191,11 +218,15 @@ func (r *queryResolver) ProjectMembers(ctx context.Context, projectID string) ([
 
 // Save is the resolver for the save field.
 func (r *queryResolver) Save(ctx context.Context, projectID string) (*model.Save, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	return r.SaveService.GetSave(ctx, projectID)
 }
 
 // PostEditor is the resolver for the postEditor field.
 func (r *subscriptionResolver) PostEditor(ctx context.Context, projectID string) (<-chan *model.Save, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 	return r.SaveService.WsEditor(ctx, projectID)
 }
 
