@@ -2,13 +2,26 @@ package middleware
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"net"
 	"net/http"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
+
+type accessLog struct {
+	RequestClientIP  string `json:"http_request_client_ip"`
+	RequestDuration  int64  `json:"http_request_duration"`
+	RequestHost      string `json:"http_request_host"`
+	RequestMethod    string `json:"http_request_method"`
+	RequestPath      string `json:"http_request_path"`
+	RequestProtocol  string `json:"http_request_protocol"`
+	RequestSize      int64  `json:"http_request_size"`
+	RequestTime      string `json:"http_request_time"`
+	RequestUserAgent string `json:"http_request_user_agent"`
+	ResponseSize     int    `json:"http_response_size"`
+	ResponseStatus   int    `json:"http_response_status"`
+}
 
 // AccessLog helps log request and response related data.
 func AccessLog(h http.Handler) http.Handler {
@@ -19,19 +32,26 @@ func AccessLog(h http.Handler) http.Handler {
 
 		h.ServeHTTP(wr, r)
 
-		logrus.WithFields(logrus.Fields{
-			"http_req_client_ip":  wr.reqClientIP,
-			"http_req_duration":   time.Since(t).Milliseconds(),
-			"http_req_host":       wr.reqHost,
-			"http_req_method":     wr.reqMethod,
-			"http_req_path":       wr.reqPath,
-			"http_req_protocol":   wr.reqProto,
-			"http_req_size":       wr.reqSize,
-			"http_req_time":       wr.reqTime,
-			"http_req_user_agent": wr.reqUserAgent,
-			"http_res_size":       wr.resSize,
-			"http_res_status":     wr.resStatus,
-		}).Info()
+		al := &accessLog{
+			RequestClientIP:  wr.reqClientIP,
+			RequestDuration:  time.Since(t).Milliseconds(),
+			RequestHost:      wr.reqHost,
+			RequestMethod:    wr.reqMethod,
+			RequestPath:      wr.reqPath,
+			RequestProtocol:  wr.reqProto,
+			RequestSize:      wr.reqSize,
+			RequestTime:      wr.reqTime,
+			RequestUserAgent: wr.reqUserAgent,
+			ResponseSize:     wr.resSize,
+			ResponseStatus:   wr.resStatus,
+		}
+
+		data, err := json.Marshal(al)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Println(string(data))
 	})
 }
 
