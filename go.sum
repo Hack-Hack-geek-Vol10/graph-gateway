@@ -32,6 +32,8 @@ github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyua
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/newrelic/go-agent/v3 v3.28.1 h1:jJfangbTvuLsP+zWZo2EafACbZ9xvZfdDM8Ly15cPpo=
 github.com/newrelic/go-agent/v3 v3.28.1/go.mod h1:9utrgxlSryNqRrTvII2XBL+0lpofXbqXApvVWPpbzUg=
+github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.4.1 h1:G9D/jUoEmIT8zCv5PU+1jJbXyzWnygiMoRZrmnEKSAo=
+github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.4.1/go.mod h1:MEK4BX1J5e1JW7KtujvhC5zAybelhIqejPFzy4HxO9M=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/rs/cors v1.10.1 h1:L0uuZVXIKlI1SShY2nhFfo44TYvDPQ1w4oFkUJNfhyo=
