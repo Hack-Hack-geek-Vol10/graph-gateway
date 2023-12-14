@@ -17,4 +17,5 @@ type Service struct {
 	MemberServiceAddr  string `env:"MEMBER_SERVICE_ADDR" envDefault:"localhost:8083"`
 	ImageServiceAddr   string `env:"IMAGE_SERVICE_ADDR" envDefault:"localhost:8084"`
 	TokenServiceAddr   string `env:"TOKEN_SERVICE_ADDR" envDefault:"localhost:8085"`
+	SaveServiceAddr    string `env:"SAVE_SERVICE_ADDR" envDefault:"localhost:8086"`
 }

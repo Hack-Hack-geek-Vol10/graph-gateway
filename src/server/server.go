@@ -43,14 +43,16 @@ func Server() {
 		newrelic.WrapHandle(
 			app,
 			"/query",
-			middleware.Recover(
-				c.Handler(
-					middleware.FirebaseAuth(
-						handler.NewDefaultServer(
-							internal.NewExecutableSchema(
-								internal.Config{
-									Resolvers: resolver,
-								},
+			middleware.AccessLog(
+				middleware.Recover(
+					c.Handler(
+						middleware.FirebaseAuth(
+							handler.NewDefaultServer(
+								internal.NewExecutableSchema(
+									internal.Config{
+										Resolvers: resolver,
+									},
+								),
 							),
 						),
 					),

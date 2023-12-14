@@ -16,7 +16,7 @@ type UserClient interface {
 	GetOneUser(ctx context.Context, txn *newrelic.Transaction, userId string) (*userService.UserDetail, error)
 }
 
-func NewUserClien(client userService.UserClient) UserClient {
+func NewUserClient(client userService.UserClient) UserClient {
 	return &userClient{
 		client: client,
 	}

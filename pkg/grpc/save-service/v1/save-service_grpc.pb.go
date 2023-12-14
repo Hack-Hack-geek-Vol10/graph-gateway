@@ -44,7 +44,6 @@ func NewSaveClient(cc grpc.ClientConnInterface) SaveClient {
 func (c *saveClient) CreateSave(ctx context.Context, in *CreateSaveRequest, opts ...grpc.CallOption) (*CreateSaveResponse, error) {
 	out := new(CreateSaveResponse)
 	err := c.cc.Invoke(ctx, Save_CreateSave_FullMethodName, in, out, opts...)
-
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +53,6 @@ func (c *saveClient) CreateSave(ctx context.Context, in *CreateSaveRequest, opts
 func (c *saveClient) GetSave(ctx context.Context, in *GetSaveRequest, opts ...grpc.CallOption) (*GetSaveResponse, error) {
 	out := new(GetSaveResponse)
 	err := c.cc.Invoke(ctx, Save_GetSave_FullMethodName, in, out, opts...)
-
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +62,6 @@ func (c *saveClient) GetSave(ctx context.Context, in *GetSaveRequest, opts ...gr
 func (c *saveClient) DeleteSave(ctx context.Context, in *DeleteSaveRequest, opts ...grpc.CallOption) (*DeleteSaveResponse, error) {
 	out := new(DeleteSaveResponse)
 	err := c.cc.Invoke(ctx, Save_DeleteSave_FullMethodName, in, out, opts...)
-
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +105,6 @@ func RegisterSaveServer(s grpc.ServiceRegistrar, srv SaveServer) {
 }
 
 func _Save_CreateSave_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-
 	in := new(CreateSaveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
