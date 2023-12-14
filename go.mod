@@ -9,6 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/newrelic/go-agent/v3 v3.28.1
 	github.com/rs/cors v1.10.1
+	github.com/sirupsen/logrus v1.9.3
 	github.com/vektah/gqlparser/v2 v2.5.10
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0
