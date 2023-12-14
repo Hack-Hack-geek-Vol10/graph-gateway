@@ -573,6 +573,7 @@ var sources = []*ast.Source{
 # あと、このファイルはコメントアウトしてもCI回るから注意
 # とりあえず、このファイルは変更は計画的にやること
 scalar Upload
+scalar Bytes
 
 enum Auth {
   read_only
@@ -603,13 +604,13 @@ type ProjectMember {
 type Save {
   saveId: ID!
   editor: String!
-  object: String!
+  object: Bytes!
 }
 
 input CreateSaveInput {
   projectId: ID!
   editor: String!
-  object: String!
+  object: Bytes!
 }
 
 type Mutation {
@@ -2554,9 +2555,9 @@ func (ec *executionContext) _Save_object(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.([]byte)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNBytes2ᚕbyte(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Save_object(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2566,7 +2567,7 @@ func (ec *executionContext) fieldContext_Save_object(ctx context.Context, field 
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4581,7 +4582,7 @@ func (ec *executionContext) unmarshalInputCreateSaveInput(ctx context.Context, o
 			it.Editor = data
 		case "object":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("object"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNBytes2ᚕbyte(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5400,6 +5401,27 @@ func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interf
 
 func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.SelectionSet, v bool) graphql.Marshaler {
 	res := graphql.MarshalBoolean(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNBytes2ᚕbyte(ctx context.Context, v interface{}) ([]byte, error) {
+	res, err := model.UnmarshalBytes(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNBytes2ᚕbyte(ctx context.Context, sel ast.SelectionSet, v []byte) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	res := model.MarshalBytes(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

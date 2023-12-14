@@ -11,7 +11,7 @@ import (
 type CreateSaveInput struct {
 	ProjectID string `json:"projectId"`
 	Editor    string `json:"editor"`
-	Object    string `json:"object"`
+	Object    []byte `json:"object"`
 }
 
 type Project struct {
@@ -31,7 +31,7 @@ type ProjectMember struct {
 type Save struct {
 	SaveID string `json:"saveId"`
 	Editor string `json:"editor"`
-	Object string `json:"object"`
+	Object []byte `json:"object"`
 }
 
 type User struct {

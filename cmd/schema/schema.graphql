@@ -2,6 +2,7 @@
 # あと、このファイルはコメントアウトしてもCI回るから注意
 # とりあえず、このファイルは変更は計画的にやること
 scalar Upload
+scalar Bytes
 
 enum Auth {
   read_only
@@ -32,13 +33,13 @@ type ProjectMember {
 type Save {
   saveId: ID!
   editor: String!
-  object: String!
+  object: Bytes!
 }
 
 input CreateSaveInput {
   projectId: ID!
   editor: String!
-  object: String!
+  object: Bytes!
 }
 
 type Mutation {
