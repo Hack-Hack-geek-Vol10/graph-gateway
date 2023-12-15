@@ -62,6 +62,7 @@ func NewRouter(app *newrelic.Application) *echo.Echo {
 
 func (r *Rotuer) setMiddleware() {
 	r.e.Use(
+		middleware.CORS(), 
 		middleware.CORSWithConfig(
 			middleware.CORSConfig{
 				AllowOrigins:     []string{"*"},
