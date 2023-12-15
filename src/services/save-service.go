@@ -30,7 +30,7 @@ func NewSaveService(saveClient gateways.SaveClient) SaveService {
 	}
 }
 
-// Subscriptions
+// Mutation
 func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput) (*save.CreateSaveResponse, error) {
 	defer newrelic.FromContext(ctx).StartSegment("CreateSave-service").End()
 
@@ -52,7 +52,6 @@ func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput
 			Object: arg.Object,
 		}
 	}
-
 	return saveID, err
 }
 
@@ -73,6 +72,7 @@ func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Sav
 	}, nil
 }
 
+// Subscriptions
 func (s *saveService) WsEditor(ctx context.Context, pid string) (<-chan *model.Save, error) {
 	defer newrelic.FromContext(ctx).StartSegment("WsEditor-service").End()
 
@@ -81,7 +81,6 @@ func (s *saveService) WsEditor(ctx context.Context, pid string) (<-chan *model.S
 
 	ch := make(chan *model.Save, 1)
 	s.ChannelsByProjectID[pid] = append(s.ChannelsByProjectID[pid], ch)
-
 	// コネクション終了時にチャネルを削除
 	go func() {
 		<-ctx.Done()
