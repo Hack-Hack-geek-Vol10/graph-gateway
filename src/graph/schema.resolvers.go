@@ -225,8 +225,6 @@ func (r *queryResolver) Save(ctx context.Context, projectID string) (*model.Save
 
 // PostEditor is the resolver for the postEditor field.
 func (r *subscriptionResolver) PostEditor(ctx context.Context, projectID string) (<-chan *model.Save, error) {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-	defer cancel()
 	return r.SaveService.WsEditor(ctx, projectID)
 }
 
