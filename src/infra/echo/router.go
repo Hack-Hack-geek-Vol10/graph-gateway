@@ -11,6 +11,7 @@ import (
 	"github.com/newrelic/go-agent/v3/integrations/nrecho-v4"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/schema-creator/graph-gateway/src/graph"
+	"github.com/schema-creator/graph-gateway/src/infra/auth"
 	"github.com/schema-creator/graph-gateway/src/internal"
 )
 
@@ -108,6 +109,7 @@ func (r *Rotuer) setMiddleware() {
 				},
 			},
 		),
+		auth.FirebaseAuth(),
 		middleware.Recover(),
 		middleware.CORSWithConfig(
 			middleware.CORSConfig{
