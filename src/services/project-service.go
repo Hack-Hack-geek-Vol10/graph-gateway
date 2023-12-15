@@ -7,13 +7,12 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/schema-creator/graph-gateway/pkg/firebase"
 	member "github.com/schema-creator/graph-gateway/pkg/grpc/member-service/v1"
 	project "github.com/schema-creator/graph-gateway/pkg/grpc/project-service/v1"
 	token "github.com/schema-creator/graph-gateway/pkg/grpc/token-service/v1"
 	"github.com/schema-creator/graph-gateway/src/gateways"
 	"github.com/schema-creator/graph-gateway/src/graph/model"
-	"github.com/schema-creator/graph-gateway/src/infra/auth"
+	"github.com/schema-creator/graph-gateway/src/middleware"
 )
 
 type projectService struct {
@@ -47,7 +46,7 @@ func (p *projectService) CreateProject(ctx context.Context, txn *newrelic.Transa
 		title = "untitled"
 	}
 
-	payload := ctx.Value(auth.TokenKey).(*firebase.CustomClaims)
+	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
 
 	result, err := p.projectClient.CreateProject(ctx, txn, &project.CreateProjectRequest{
 		Title:  title,

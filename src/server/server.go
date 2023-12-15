@@ -8,12 +8,25 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/rs/cors"
 	"github.com/schema-creator/graph-gateway/cmd/config"
-	"github.com/schema-creator/graph-gateway/src/infra/echo"
+	"github.com/schema-creator/graph-gateway/src/internal"
+	"github.com/schema-creator/graph-gateway/src/middleware"
 )
 
 func Server() {
+	mux := http.NewServeMux()
+
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*", "http://localhost:3000"},
+		AllowedHeaders:   []string{"*", "Content-Type", "Authorization"},
+		AllowedMethods:   []string{"POST"},
+		AllowCredentials: true,
+		Debug:            false,
+	})
+
 	app, err := newrelic.NewApplication(
 		newrelic.ConfigFromEnvironment(),
 	)
@@ -21,11 +34,36 @@ func Server() {
 		log.Fatal(err)
 	}
 
-	handler := echo.NewRouter(app)
+	resolver, err := NewResolver(app)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mux.Handle(
+		newrelic.WrapHandle(
+			app,
+			"/query",
+			middleware.AccessLog(
+				middleware.Recover(
+					c.Handler(
+						middleware.FirebaseAuth(
+							handler.NewDefaultServer(
+								internal.NewExecutableSchema(
+									internal.Config{
+										Resolvers: resolver,
+									},
+								),
+							),
+						),
+					),
+				),
+			),
+		),
+	)
 
 	srv := &http.Server{
 		Addr:    ":" + config.Config.Server.Port,
-		Handler: handler,
+		Handler: mux,
 	}
 
 	go func() {

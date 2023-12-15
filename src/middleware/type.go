@@ -1,4 +1,4 @@
-package firebase
+package middleware
 
 import (
 	"time"
