@@ -65,7 +65,7 @@ func (r *Rotuer) setMiddleware() {
 		middleware.CORSWithConfig(
 			middleware.CORSConfig{
 				AllowOrigins:     []string{"*", "http://localhost:3000"},
-				AllowMethods:     []string{"POST", "GET"},
+				AllowMethods:     []string{"POST", "GET", "OPTIONS"},
 				AllowHeaders:     []string{auth.TokenKey, "Content-Type"},
 				AllowCredentials: true,
 			},
