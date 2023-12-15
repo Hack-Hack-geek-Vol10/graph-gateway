@@ -16,8 +16,8 @@ type userService struct {
 }
 
 type UserService interface {
-	CreateUser(ctx context.Context, txn *newrelic.Transaction, name string) (*model.User, error)
-	GetUser(ctx context.Context, txn *newrelic.Transaction, userId string) (*model.User, error)
+	CreateUser(ctx context.Context, name string) (*model.User, error)
+	GetUser(ctx context.Context, userId string) (*model.User, error)
 }
 
 func NewUserService(userClient gateways.UserClient) UserService {
@@ -26,11 +26,12 @@ func NewUserService(userClient gateways.UserClient) UserService {
 	}
 }
 
-func (u *userService) CreateUser(ctx context.Context, txn *newrelic.Transaction, name string) (*model.User, error) {
-	defer txn.StartSegment("CreateUser-service").End()
+func (u *userService) CreateUser(ctx context.Context, name string) (*model.User, error) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateUser-service").End()
+
 	payload := ctx.Value(auth.TokenKey).(*firebase.CustomClaims)
 
-	result, err := u.userClient.CreateUser(ctx, txn, &user.CreateUserParams{
+	result, err := u.userClient.CreateUser(ctx, &user.CreateUserParams{
 		UserId: payload.UserId,
 		Email:  payload.Email,
 		Name:   name,
@@ -47,9 +48,10 @@ func (u *userService) CreateUser(ctx context.Context, txn *newrelic.Transaction,
 	}, nil
 }
 
-func (u *userService) GetUser(ctx context.Context, txn *newrelic.Transaction, userId string) (*model.User, error) {
-	defer txn.StartSegment("GetUser-service").End()
-	result, err := u.userClient.GetOneUser(ctx, txn, userId)
+func (u *userService) GetUser(ctx context.Context, userId string) (*model.User, error) {
+	defer newrelic.FromContext(ctx).StartSegment("GetUser-service").End()
+
+	result, err := u.userClient.GetOneUser(ctx, userId)
 	if err != nil {
 		return nil, err
 	}

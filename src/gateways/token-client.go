@@ -12,9 +12,9 @@ type tokenClient struct {
 }
 
 type TokenClient interface {
-	CreateToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.CreateTokenRequest) (*tokenService.CreateTokenResponse, error)
-	GetToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.GetTokenRequest) (*tokenService.GetTokenResponse, error)
-	DeleteToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.DeleteTokenRequest) (*tokenService.DeleteTokenResponse, error)
+	CreateToken(ctx context.Context, arg *tokenService.CreateTokenRequest) (*tokenService.CreateTokenResponse, error)
+	GetToken(ctx context.Context, arg *tokenService.GetTokenRequest) (*tokenService.GetTokenResponse, error)
+	DeleteToken(ctx context.Context, arg *tokenService.DeleteTokenRequest) (*tokenService.DeleteTokenResponse, error)
 }
 
 func NewTokenClient(client tokenService.TokenClient) TokenClient {
@@ -23,17 +23,17 @@ func NewTokenClient(client tokenService.TokenClient) TokenClient {
 	}
 }
 
-func (t *tokenClient) CreateToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.CreateTokenRequest) (*tokenService.CreateTokenResponse, error) {
-	defer txn.StartSegment("CreateToken-client").End()
+func (t *tokenClient) CreateToken(ctx context.Context, arg *tokenService.CreateTokenRequest) (*tokenService.CreateTokenResponse, error) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateToken-client").End()
 	return t.client.CreateToken(ctx, arg)
 }
 
-func (t *tokenClient) GetToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.GetTokenRequest) (*tokenService.GetTokenResponse, error) {
-	defer txn.StartSegment("GetToken-client").End()
+func (t *tokenClient) GetToken(ctx context.Context, arg *tokenService.GetTokenRequest) (*tokenService.GetTokenResponse, error) {
+	defer newrelic.FromContext(ctx).StartSegment("GetToken-client").End()
 	return t.client.GetToken(ctx, arg)
 }
 
-func (t *tokenClient) DeleteToken(ctx context.Context, txn *newrelic.Transaction, arg *tokenService.DeleteTokenRequest) (*tokenService.DeleteTokenResponse, error) {
-	defer txn.StartSegment("Delete-client").End()
+func (t *tokenClient) DeleteToken(ctx context.Context, arg *tokenService.DeleteTokenRequest) (*tokenService.DeleteTokenResponse, error) {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteToken-client").End()
 	return t.client.DeleteToken(ctx, arg)
 }

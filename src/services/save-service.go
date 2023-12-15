@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 
+	"github.com/newrelic/go-agent/v3/newrelic"
 	save "github.com/schema-creator/graph-gateway/pkg/grpc/save-service/v1"
 	"github.com/schema-creator/graph-gateway/src/gateways"
 	"github.com/schema-creator/graph-gateway/src/graph/model"
@@ -31,6 +32,8 @@ func NewSaveService(saveClient gateways.SaveClient) SaveService {
 
 // Subscriptions
 func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput) (*save.CreateSaveResponse, error) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateSave-service").End()
+
 	saveID, err := s.saveClient.CreateSave(ctx, &save.CreateSaveRequest{
 		ProjectId: arg.ProjectID,
 		Editor:    arg.Editor,
@@ -54,6 +57,8 @@ func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput
 }
 
 func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Save, error) {
+	defer newrelic.FromContext(ctx).StartSegment("GetSave-service").End()
+
 	result, err := s.saveClient.GetSave(ctx, &save.GetSaveRequest{
 		ProjectId: projectID,
 	})
@@ -69,6 +74,8 @@ func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Sav
 }
 
 func (s *saveService) WsEditor(ctx context.Context, pid string) (<-chan *model.Save, error) {
+	defer newrelic.FromContext(ctx).StartSegment("WsEditor-service").End()
+
 	s.Mutex.Lock()
 	defer s.Mutex.Unlock()
 

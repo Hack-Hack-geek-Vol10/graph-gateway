@@ -20,10 +20,9 @@ import (
 func (r *mutationResolver) CreateUser(ctx context.Context, name string) (*model.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("CreateUser").End()
+	defer newrelic.FromContext(ctx).StartSegment("CreateUser").End()
 
-	res, err := r.UserService.CreateUser(ctx, txn, name)
+	res, err := r.UserService.CreateUser(ctx, name)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -45,10 +44,9 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, userID string) (*mode
 func (r *mutationResolver) CreateProject(ctx context.Context, title string) (*model.Project, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("CreateProject").End()
+	defer newrelic.FromContext(ctx).StartSegment("CreateProject").End()
 
-	res, err := r.ProjectService.CreateProject(ctx, txn, title)
+	res, err := r.ProjectService.CreateProject(ctx, title)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -61,10 +59,9 @@ func (r *mutationResolver) CreateProject(ctx context.Context, title string) (*mo
 func (r *mutationResolver) UpdateProject(ctx context.Context, projectID string, title *string, lastImage *graphql.Upload) (*model.Project, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("UpdateProject").End()
+	defer newrelic.FromContext(ctx).StartSegment("UpdateProject").End()
 
-	res, err := r.ProjectService.UpdateProject(ctx, txn, projectID, *title, lastImage)
+	res, err := r.ProjectService.UpdateProject(ctx, projectID, *title, lastImage)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -77,10 +74,9 @@ func (r *mutationResolver) UpdateProject(ctx context.Context, projectID string, 
 func (r *mutationResolver) DeleteProject(ctx context.Context, projectID string) (*string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("DeleteProject").End()
+	defer newrelic.FromContext(ctx).StartSegment("DeleteProject").End()
 
-	res, err := r.ProjectService.DeleteProject(ctx, txn, projectID)
+	res, err := r.ProjectService.DeleteProject(ctx, projectID)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -92,10 +88,9 @@ func (r *mutationResolver) DeleteProject(ctx context.Context, projectID string) 
 func (r *mutationResolver) CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("CreateInviteLink").End()
+	defer newrelic.FromContext(ctx).StartSegment("CreateInviteLink").End()
 
-	res, err := r.ProjectService.CreateInviteLink(ctx, txn, projectID, authority)
+	res, err := r.ProjectService.CreateInviteLink(ctx, projectID, authority)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -107,10 +102,9 @@ func (r *mutationResolver) CreateInviteLink(ctx context.Context, projectID strin
 func (r *mutationResolver) CreateProjectMember(ctx context.Context, token string) (*model.ProjectMember, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("CreateProjectMember").End()
+	defer newrelic.FromContext(ctx).StartSegment("CreateProjectMember").End()
 
-	res, err := r.MemberService.CreateMember(ctx, txn, token)
+	res, err := r.MemberService.CreateMember(ctx, token)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -122,10 +116,9 @@ func (r *mutationResolver) CreateProjectMember(ctx context.Context, token string
 func (r *mutationResolver) UpdateProjectMember(ctx context.Context, projectID string, userID string, authority *model.Auth) (*model.ProjectMember, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("UpdateProjectMember").End()
+	defer newrelic.FromContext(ctx).StartSegment("UpdateProjectMember").End()
 
-	res, err := r.MemberService.UpdateMember(ctx, txn, projectID, userID, authority)
+	res, err := r.MemberService.UpdateMember(ctx, projectID, userID, authority)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -137,10 +130,9 @@ func (r *mutationResolver) UpdateProjectMember(ctx context.Context, projectID st
 func (r *mutationResolver) DeleteProjectMember(ctx context.Context, projectID string, userID string) (*string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("DeleteProjectMember").End()
+	defer newrelic.FromContext(ctx).StartSegment("DeleteProjectMember").End()
 
-	res, err := r.MemberService.DeleteMember(ctx, txn, projectID, userID)
+	res, err := r.MemberService.DeleteMember(ctx, projectID, userID)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -152,6 +144,8 @@ func (r *mutationResolver) DeleteProjectMember(ctx context.Context, projectID st
 func (r *mutationResolver) CreateSave(ctx context.Context, input model.CreateSaveInput) (*string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
+	defer newrelic.FromContext(ctx).StartSegment("CreateSave").End()
+
 	param, err := r.SaveService.CreateSave(ctx, &input)
 	return &param.SaveId, err
 }
@@ -160,10 +154,9 @@ func (r *mutationResolver) CreateSave(ctx context.Context, input model.CreateSav
 func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("GetUser").End()
+	defer newrelic.FromContext(ctx).StartSegment("GetUser").End()
 
-	res, err := r.UserService.GetUser(ctx, txn, userID)
+	res, err := r.UserService.GetUser(ctx, userID)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -175,10 +168,9 @@ func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, e
 func (r *queryResolver) Project(ctx context.Context, projectID string) (*model.Project, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("GetProject").End()
+	defer newrelic.FromContext(ctx).StartSegment("GetProject").End()
 
-	res, err := r.ProjectService.GetProject(ctx, txn, projectID)
+	res, err := r.ProjectService.GetProject(ctx, projectID)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -190,10 +182,9 @@ func (r *queryResolver) Project(ctx context.Context, projectID string) (*model.P
 func (r *queryResolver) Projects(ctx context.Context, userID string) ([]*model.Project, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("GetProjects").End()
+	defer newrelic.FromContext(ctx).StartSegment("GetProjects").End()
 
-	res, err := r.ProjectService.GetProjects(ctx, txn, userID)
+	res, err := r.ProjectService.GetProjects(ctx, userID)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -205,10 +196,9 @@ func (r *queryResolver) Projects(ctx context.Context, userID string) ([]*model.P
 func (r *queryResolver) ProjectMembers(ctx context.Context, projectID string) ([]*model.ProjectMember, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	txn := newrelic.FromContext(ctx)
-	defer txn.StartSegment("GetProjectMembers").End()
+	defer newrelic.FromContext(ctx).StartSegment("GetProjectMembers").End()
 
-	res, err := r.MemberService.GetMembers(ctx, txn, projectID)
+	res, err := r.MemberService.GetMembers(ctx, projectID)
 	if err != nil {
 		log.Println(err)
 		return nil, err

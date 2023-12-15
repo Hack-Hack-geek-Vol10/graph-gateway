@@ -24,12 +24,12 @@ type projectService struct {
 }
 
 type ProjectService interface {
-	CreateProject(ctx context.Context, txn *newrelic.Transaction, title string) (*model.Project, error)
-	GetProject(ctx context.Context, txn *newrelic.Transaction, projectID string) (*model.Project, error)
-	GetProjects(ctx context.Context, txn *newrelic.Transaction, userID string) ([]*model.Project, error)
-	UpdateProject(ctx context.Context, txn *newrelic.Transaction, projectID, title string, image *graphql.Upload) (*model.Project, error)
-	DeleteProject(ctx context.Context, txn *newrelic.Transaction, projectId string) (*string, error)
-	CreateInviteLink(ctx context.Context, txn *newrelic.Transaction, projectID string, authority model.Auth) (*string, error)
+	CreateProject(ctx context.Context, title string) (*model.Project, error)
+	GetProject(ctx context.Context, projectID string) (*model.Project, error)
+	GetProjects(ctx context.Context, userID string) ([]*model.Project, error)
+	UpdateProject(ctx context.Context, projectID, title string, image *graphql.Upload) (*model.Project, error)
+	DeleteProject(ctx context.Context, projectId string) (*string, error)
+	CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error)
 }
 
 func NewProjectService(projectClient gateways.ProjectClient, memberClient gateways.MemberClient, tokenClient gateways.TokenClient, imageClient gateways.ImageClient) ProjectService {
@@ -41,15 +41,16 @@ func NewProjectService(projectClient gateways.ProjectClient, memberClient gatewa
 	}
 }
 
-func (p *projectService) CreateProject(ctx context.Context, txn *newrelic.Transaction, title string) (*model.Project, error) {
-	defer txn.StartSegment("CreateProject-service").End()
+func (p *projectService) CreateProject(ctx context.Context, title string) (*model.Project, error) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateProject-service").End()
+
 	if len(title) == 0 {
 		title = "untitled"
 	}
 
 	payload := ctx.Value(auth.TokenKey).(*firebase.CustomClaims)
 
-	result, err := p.projectClient.CreateProject(ctx, txn, &project.CreateProjectRequest{
+	result, err := p.projectClient.CreateProject(ctx, &project.CreateProjectRequest{
 		Title:  title,
 		UserId: payload.UserId,
 	})
@@ -58,7 +59,7 @@ func (p *projectService) CreateProject(ctx context.Context, txn *newrelic.Transa
 		return nil, err
 	}
 
-	_, err = p.memberClient.CreateProjectMember(ctx, txn, &member.MemberRequest{
+	_, err = p.memberClient.CreateProjectMember(ctx, &member.MemberRequest{
 		ProjectId: result.ProjectId,
 		UserId:    payload.UserId,
 		Authority: member.Auth.Enum(member.Auth_owner).String(),
@@ -76,10 +77,10 @@ func (p *projectService) CreateProject(ctx context.Context, txn *newrelic.Transa
 	}, nil
 }
 
-func (p *projectService) GetProject(ctx context.Context, txn *newrelic.Transaction, projectID string) (*model.Project, error) {
-	defer txn.StartSegment("GetProject-service").End()
+func (p *projectService) GetProject(ctx context.Context, projectID string) (*model.Project, error) {
+	defer newrelic.FromContext(ctx).StartSegment("GetProject-service").End()
 
-	result, err := p.projectClient.GetOneProject(ctx, txn, projectID)
+	result, err := p.projectClient.GetOneProject(ctx, projectID)
 	if err != nil {
 		return nil, err
 	}
@@ -92,10 +93,10 @@ func (p *projectService) GetProject(ctx context.Context, txn *newrelic.Transacti
 	}, nil
 }
 
-func (p *projectService) GetProjects(ctx context.Context, txn *newrelic.Transaction, userId string) ([]*model.Project, error) {
-	defer txn.StartSegment("GetProjects-service").End()
+func (p *projectService) GetProjects(ctx context.Context, userId string) ([]*model.Project, error) {
+	defer newrelic.FromContext(ctx).StartSegment("GetProjects-service").End()
 
-	result, err := p.projectClient.GetProjects(ctx, txn, userId)
+	result, err := p.projectClient.GetProjects(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -113,8 +114,8 @@ func (p *projectService) GetProjects(ctx context.Context, txn *newrelic.Transact
 	return projects, nil
 }
 
-func (p *projectService) UpdateProject(ctx context.Context, txn *newrelic.Transaction, projectID, title string, image *graphql.Upload) (*model.Project, error) {
-	defer txn.StartSegment("UpdateProject-service").End()
+func (p *projectService) UpdateProject(ctx context.Context, projectID, title string, image *graphql.Upload) (*model.Project, error) {
+	defer newrelic.FromContext(ctx).StartSegment("UpdateProject-service").End()
 
 	var (
 		result *project.ProjectDetails
@@ -123,14 +124,14 @@ func (p *projectService) UpdateProject(ctx context.Context, txn *newrelic.Transa
 
 	switch {
 	case len(title) != 0 && image == nil:
-		result, err = p.projectClient.UpdateProjectTitle(ctx, txn, &project.UpdateTitleRequest{
+		result, err = p.projectClient.UpdateProjectTitle(ctx, &project.UpdateTitleRequest{
 			ProjectId: projectID,
 			Title:     title,
 		})
 	case len(title) == 0 && image != nil:
-		result, err = p.imageUpload(ctx, txn, projectID, image)
+		result, err = p.imageUpload(ctx, projectID, image)
 	case len(title) != 0 && image != nil:
-		_, err = p.projectClient.UpdateProjectTitle(ctx, txn, &project.UpdateTitleRequest{
+		_, err = p.projectClient.UpdateProjectTitle(ctx, &project.UpdateTitleRequest{
 			ProjectId: projectID,
 			Title:     title,
 		})
@@ -138,7 +139,7 @@ func (p *projectService) UpdateProject(ctx context.Context, txn *newrelic.Transa
 			return nil, err
 		}
 
-		result, err = p.imageUpload(ctx, txn, projectID, image)
+		result, err = p.imageUpload(ctx, projectID, image)
 	default:
 		return nil, fmt.Errorf("title or image must be specified")
 	}
@@ -155,31 +156,31 @@ func (p *projectService) UpdateProject(ctx context.Context, txn *newrelic.Transa
 	}, nil
 }
 
-func (p *projectService) imageUpload(ctx context.Context, txn *newrelic.Transaction, projectID string, image *graphql.Upload) (*project.ProjectDetails, error) {
-	defer txn.StartSegment("imageUpload-service").End()
+func (p *projectService) imageUpload(ctx context.Context, projectID string, image *graphql.Upload) (*project.ProjectDetails, error) {
+	defer newrelic.FromContext(ctx).StartSegment("imageUpload-service").End()
 
-	response, err := p.imageClient.UploadImage(ctx, txn, projectID, image)
+	response, err := p.imageClient.UploadImage(ctx, projectID, image)
 	if err != nil {
 		return nil, err
 	}
 
-	return p.projectClient.UpdateProjectImage(ctx, txn, projectID, response.Path)
+	return p.projectClient.UpdateProjectImage(ctx, projectID, response.Path)
 }
 
-func (p *projectService) DeleteProject(ctx context.Context, txn *newrelic.Transaction, projectId string) (*string, error) {
-	defer txn.StartSegment("DeleteProject-service").End()
+func (p *projectService) DeleteProject(ctx context.Context, projectId string) (*string, error) {
+	defer newrelic.FromContext(ctx).StartSegment("DeleteProject-service").End()
 
-	_, err := p.tokenClient.DeleteToken(ctx, txn, &token.DeleteTokenRequest{ProjectId: projectId})
+	_, err := p.tokenClient.DeleteToken(ctx, &token.DeleteTokenRequest{ProjectId: projectId})
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = p.memberClient.DeleteAllProjectMember(ctx, txn, &member.DeleteAllMemberRequest{ProjectId: projectId})
+	_, err = p.memberClient.DeleteAllProjectMember(ctx, &member.DeleteAllMemberRequest{ProjectId: projectId})
 	if err != nil {
 		return nil, err
 	}
 
-	project, err := p.projectClient.DeleteProject(ctx, txn, projectId)
+	project, err := p.projectClient.DeleteProject(ctx, projectId)
 	if err != nil {
 		return nil, err
 	}
@@ -187,10 +188,10 @@ func (p *projectService) DeleteProject(ctx context.Context, txn *newrelic.Transa
 	return &project, nil
 }
 
-func (p *projectService) CreateInviteLink(ctx context.Context, txn *newrelic.Transaction, projectID string, authority model.Auth) (*string, error) {
-	defer txn.StartSegment("CreateInviteLink-service").End()
+func (p *projectService) CreateInviteLink(ctx context.Context, projectID string, authority model.Auth) (*string, error) {
+	defer newrelic.FromContext(ctx).StartSegment("CreateInviteLink-service").End()
 
-	result, err := p.tokenClient.CreateToken(ctx, txn, &token.CreateTokenRequest{
+	result, err := p.tokenClient.CreateToken(ctx, &token.CreateTokenRequest{
 		ProjectId: projectID,
 		Authority: authority.String(),
 	})
