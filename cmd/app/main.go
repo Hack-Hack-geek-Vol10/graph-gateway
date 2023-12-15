@@ -5,7 +5,7 @@ import (
 
 	"github.com/schema-creator/graph-gateway/cmd/config"
 	"github.com/schema-creator/graph-gateway/pkg/google"
-	"github.com/schema-creator/graph-gateway/src/server"
+	"github.com/schema-creator/graph-gateway/src/infra/server"
 )
 
 func init() {

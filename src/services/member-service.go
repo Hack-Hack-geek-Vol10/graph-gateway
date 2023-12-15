@@ -4,11 +4,12 @@ import (
 	"context"
 
 	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/schema-creator/graph-gateway/pkg/firebase"
 	member "github.com/schema-creator/graph-gateway/pkg/grpc/member-service/v1"
 	v1 "github.com/schema-creator/graph-gateway/pkg/grpc/token-service/v1"
 	"github.com/schema-creator/graph-gateway/src/gateways"
 	"github.com/schema-creator/graph-gateway/src/graph/model"
-	"github.com/schema-creator/graph-gateway/src/middleware"
+	"github.com/schema-creator/graph-gateway/src/infra/auth"
 )
 
 type memberService struct {
@@ -33,7 +34,7 @@ func NewMemberService(memberClient gateways.MemberClient, tokenClient gateways.T
 func (m *memberService) CreateMember(ctx context.Context, txn *newrelic.Transaction, token string) (*model.ProjectMember, error) {
 	defer txn.StartSegment("CreateMember-service").End()
 
-	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
+	payload := ctx.Value(auth.TokenKey).(*firebase.CustomClaims)
 
 	response, err := m.tokenClient.GetToken(ctx, txn, &v1.GetTokenRequest{
 		Token: token,

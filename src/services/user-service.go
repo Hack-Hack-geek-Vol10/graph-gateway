@@ -4,10 +4,11 @@ import (
 	"context"
 
 	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/schema-creator/graph-gateway/pkg/firebase"
 	user "github.com/schema-creator/graph-gateway/pkg/grpc/user-service/v1"
 	"github.com/schema-creator/graph-gateway/src/gateways"
 	"github.com/schema-creator/graph-gateway/src/graph/model"
-	"github.com/schema-creator/graph-gateway/src/middleware"
+	"github.com/schema-creator/graph-gateway/src/infra/auth"
 )
 
 type userService struct {
@@ -27,7 +28,7 @@ func NewUserService(userClient gateways.UserClient) UserService {
 
 func (u *userService) CreateUser(ctx context.Context, txn *newrelic.Transaction, name string) (*model.User, error) {
 	defer txn.StartSegment("CreateUser-service").End()
-	payload := ctx.Value(middleware.TokenKey{}).(*middleware.CustomClaims)
+	payload := ctx.Value(auth.TokenKey).(*firebase.CustomClaims)
 
 	result, err := u.userClient.CreateUser(ctx, txn, &user.CreateUserParams{
 		UserId: payload.UserId,
