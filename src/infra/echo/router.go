@@ -25,11 +25,13 @@ func NewRouter(app *newrelic.Application) *echo.Echo {
 		app: app,
 	}
 
+	resolver := graph.NewResolver()
+
 	router.e.GET("/query", func(c echo.Context) error {
 		handler.NewDefaultServer(
 			internal.NewExecutableSchema(
 				internal.Config{
-					Resolvers: graph.NewResolver(),
+					Resolvers: resolver,
 				},
 			),
 		).ServeHTTP(c.Response(), c.Request())
@@ -40,7 +42,7 @@ func NewRouter(app *newrelic.Application) *echo.Echo {
 		handler.NewDefaultServer(
 			internal.NewExecutableSchema(
 				internal.Config{
-					Resolvers: graph.NewResolver(),
+					Resolvers: resolver,
 				},
 			),
 		).ServeHTTP(c.Response(), c.Request())
