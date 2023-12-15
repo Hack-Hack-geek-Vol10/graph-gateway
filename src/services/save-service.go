@@ -29,7 +29,7 @@ func NewSaveService(saveClient gateways.SaveClient) SaveService {
 	}
 }
 
-// Mutation
+// Subscriptions
 func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput) (*save.CreateSaveResponse, error) {
 	saveID, err := s.saveClient.CreateSave(ctx, &save.CreateSaveRequest{
 		ProjectId: arg.ProjectID,
@@ -39,16 +39,7 @@ func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput
 	if err != nil {
 		return nil, err
 	}
-	// チャネルに送信
-	s.Mutex.Lock()
-	defer s.Mutex.Unlock()
-	for _, ch := range s.ChannelsByProjectID[arg.ProjectID] {
-		ch <- &model.Save{
-			SaveID: saveID.String(),
-			Editor: arg.Editor,
-			Object: arg.Object,
-		}
-	}
+
 	return saveID, err
 }
 
@@ -60,6 +51,17 @@ func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Sav
 		return nil, err
 	}
 
+	// チャネルに送信
+	s.Mutex.Lock()
+	defer s.Mutex.Unlock()
+	for _, ch := range s.ChannelsByProjectID[projectID] {
+		ch <- &model.Save{
+			SaveID: result.SaveId,
+			Editor: result.Editor,
+			Object: result.Object,
+		}
+	}
+
 	return &model.Save{
 		SaveID: result.SaveId,
 		Editor: result.Editor,
@@ -67,13 +69,13 @@ func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Sav
 	}, nil
 }
 
-// Subscriptions
 func (s *saveService) WsEditor(ctx context.Context, pid string) (<-chan *model.Save, error) {
 	s.Mutex.Lock()
 	defer s.Mutex.Unlock()
 
 	ch := make(chan *model.Save, 1)
 	s.ChannelsByProjectID[pid] = append(s.ChannelsByProjectID[pid], ch)
+
 	// コネクション終了時にチャネルを削除
 	go func() {
 		<-ctx.Done()
