@@ -25,6 +25,8 @@ func NewRouter(app *newrelic.Application) *echo.Echo {
 		app: app,
 	}
 
+	router.setMiddleware()
+
 	resolver := graph.NewResolver()
 
 	router.e.GET("/query", func(c echo.Context) error {
