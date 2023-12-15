@@ -39,6 +39,16 @@ func (s *saveService) CreateSave(ctx context.Context, arg *model.CreateSaveInput
 	if err != nil {
 		return nil, err
 	}
+	// チャネルに送信
+	s.Mutex.Lock()
+	defer s.Mutex.Unlock()
+	for _, ch := range s.ChannelsByProjectID[arg.ProjectID] {
+		ch <- &model.Save{
+			SaveID: saveID.String(),
+			Editor: arg.Editor,
+			Object: arg.Object,
+		}
+	}
 
 	return saveID, err
 }
@@ -49,17 +59,6 @@ func (s *saveService) GetSave(ctx context.Context, projectID string) (*model.Sav
 	})
 	if err != nil {
 		return nil, err
-	}
-
-	// チャネルに送信
-	s.Mutex.Lock()
-	defer s.Mutex.Unlock()
-	for _, ch := range s.ChannelsByProjectID[projectID] {
-		ch <- &model.Save{
-			SaveID: result.SaveId,
-			Editor: result.Editor,
-			Object: result.Object,
-		}
 	}
 
 	return &model.Save{
