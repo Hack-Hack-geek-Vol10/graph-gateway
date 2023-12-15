@@ -20,7 +20,7 @@ func FirebaseAuth() echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			token := c.Request().Header.Get(authTokenKey)
 
-			if c.IsWebSocket() {
+			if c.IsWebSocket() || c.Path() == "/playground" {
 				next(c)
 			}
 
