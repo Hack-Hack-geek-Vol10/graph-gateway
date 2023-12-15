@@ -62,6 +62,14 @@ func NewRouter(app *newrelic.Application) *echo.Echo {
 
 func (r *Rotuer) setMiddleware() {
 	r.e.Use(
+		middleware.CORSWithConfig(
+			middleware.CORSConfig{
+				AllowOrigins:     []string{"*", "http://localhost:3000"},
+				AllowMethods:     []string{"POST", "GET"},
+				AllowHeaders:     []string{auth.TokenKey, "Content-Type"},
+				AllowCredentials: true,
+			},
+		),
 		nrecho.Middleware(r.app),
 		middleware.RequestLoggerWithConfig(
 			middleware.RequestLoggerConfig{
@@ -111,13 +119,5 @@ func (r *Rotuer) setMiddleware() {
 		),
 		auth.FirebaseAuth(),
 		middleware.Recover(),
-		middleware.CORSWithConfig(
-			middleware.CORSConfig{
-				AllowOrigins:     []string{"*", "http://localhost:3000"},
-				AllowMethods:     []string{"POST", "GET"},
-				AllowHeaders:     []string{"Content-Type", "Authorization"},
-				AllowCredentials: true,
-			},
-		),
 	)
 }
