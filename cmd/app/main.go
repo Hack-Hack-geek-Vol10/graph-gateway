@@ -14,6 +14,6 @@ func init() {
 }
 
 func main() {
-	log.Println("start graph-gateway server")
+	log.Println("start graph-gateway server :)")
 	server.Server()
 }
